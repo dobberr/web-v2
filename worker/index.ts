@@ -11,6 +11,10 @@ function json(data: unknown, init: ResponseInit = {}) {
 function wispTarget(request: Request, configuredUrl: string) {
 	const configured = new URL(configuredUrl);
 	const incoming = new URL(request.url);
+	// Workers proxy WebSocket upgrades through fetch() using HTTP(S) URLs.
+	// Accept the browser-facing wss:// form in configuration as well.
+	if (configured.protocol === "wss:") configured.protocol = "https:";
+	if (configured.protocol === "ws:") configured.protocol = "http:";
 	configured.pathname = `${configured.pathname.replace(/\/$/, "")}${incoming.pathname.replace(/^\/wisp/, "") || "/"}`;
 	configured.search = incoming.search;
 	return configured;

@@ -9,6 +9,16 @@ export function sameOriginWisp() {
 	return `${location.protocol.replace("http", "ws")}//${location.host}/wisp/`;
 }
 
+export function isSameOriginWisp(value: string | null | undefined) {
+	if (!value) return false;
+	try {
+		const configured = new URL(value);
+		return configured.host === location.host && configured.pathname.replace(/\/$/, "") === "/wisp";
+	} catch {
+		return false;
+	}
+}
+
 export function getRuntimeConfig(): RuntimeConfig {
 	try {
 		return JSON.parse(sessionStorage.getItem(configKey) || "null") || { wispServer: null, authBaseUrl: null };
@@ -35,6 +45,12 @@ export async function loadRuntimeConfig() {
 
 export function configuredWisp() {
 	return getRuntimeConfig().wispServer || sameOriginWisp();
+}
+
+export function resolveWisp(value: string | null | undefined) {
+	const configured = getRuntimeConfig().wispServer;
+	if (configured && (!value || isSameOriginWisp(value))) return configured;
+	return value || configured || sameOriginWisp();
 }
 
 export function configuredAuthBaseUrl() {

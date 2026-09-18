@@ -51,7 +51,7 @@ export default function Setup() {
 		libcurl.load_wasm("https://cdn.jsdelivr.net/npm/libcurl.js@latest/libcurl.wasm");
 	}
 	// @ts-expect-error no types
-	libcurl.set_websocket(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
+	libcurl.set_websocket(configuredWisp());
 	const authClient = auth;
 	const randomColors = ["orange", "red", "green", "blue", "purple", "pink", "yellow"];
 	const makePFP = () => {

@@ -26,6 +26,6 @@ npx wrangler dev
 npm run deploy
 ```
 
-Set `WISP_URL` to an externally hosted Wisp WebSocket endpoint if browser proxy features are needed. Workers can serve and bridge the WebSocket connection, but the original Node `mrrowisp` TCP/UDP listener is not a Workers runtime component. `AUTH_BASE_URL` is optional and can point to a separately hosted Magma-compatible auth service.
+Set the Cloudflare Worker variable `WISP_URL` to an externally hosted Wisp WebSocket endpoint, such as `wss://proxy.example.com/wisp/`, if browser proxy features are needed. The deploy script preserves variables configured in the Cloudflare Dashboard. Workers can bridge the WebSocket connection, but the original Node `mrrowisp` TCP/UDP listener is not a Workers runtime component. `AUTH_BASE_URL` is optional and can point to a separately hosted Magma-compatible auth service.
 
 The Worker exposes `/health`, `/api/config`, and `/wisp/*`. The Node server remains available for self-hosted deployments that need to run `mrrowisp` locally.

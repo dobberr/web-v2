@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { version } from "../package.json";
 import { libcurl } from "libcurl.js";
+import { configuredWisp } from "./sys/runtime-config";
 import { dirExists, unzip } from "./sys/types";
 import { hash } from "./hash.json";
 import apps from "./apps.json";
@@ -240,7 +241,7 @@ export default function Recovery() {
 			await libcurl.load_wasm("https://cdn.jsdelivr.net/npm/libcurl.js@latest/libcurl.wasm");
 		}
 		// @ts-expect-error types
-		libcurl.set_websocket(`${window.location.protocol.replace("http", "ws")}//${window.location.hostname}:${window.location.port}/wisp/`);
+		libcurl.set_websocket(configuredWisp());
 		const response = await libcurl.fetch(url);
 		if (!response.ok) {
 			throw new Error(`Failed to download the file. Status: ${response.status}`);

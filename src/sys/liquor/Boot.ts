@@ -52,14 +52,22 @@ window.addEventListener("load", async () => {
 			window.location.reload();
 		}
 	}
-	if (!window.anura.settings.get("directories")) {
+	const directories = window.anura.settings.get("directories") || {};
+	if (!directories.opt) {
 		const defaultDirectories = {
+			...directories,
 			apps: "/apps/anura/",
 			libs: "/system/lib/anura/",
 			init: "/system/etc/anura/init/",
 			bin: "/system/bin/anura/",
+			opt: "/system/opt/anura/",
 		};
 		await window.anura.settings.set("directories", defaultDirectories);
+	}
+	const anuraOpt = window.anura.settings.get("directories").opt;
+	if (anuraOpt) {
+		await window.tb.fs.promises.mkdir("/system/opt").catch(() => undefined);
+		await window.tb.fs.promises.mkdir(anuraOpt).catch(() => undefined);
 	}
 
 	if (!window.anura.settings.get("handler-migration-complete")) {

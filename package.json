@@ -17,7 +17,7 @@
 		"fmt": "biome format --write . && npx @terbiumos/tsl-linter ./public/apps/settings.tapp/",
 		"build:worker": "npm run build-static",
 		"dev:worker": "npm run build-static && wrangler dev",
-		"deploy": "npm run build-static && wrangler deploy",
+		"deploy": "npm run build-static && wrangler deploy --keep-vars",
 		"worker:types": "wrangler types"
 	},
 	"dependencies": {
