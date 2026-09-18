@@ -387,17 +387,11 @@ export default async function Api() {
 					});
 				});
 				const sw = await navigator.serviceWorker.register("/anura-sw.js");
-				const settings: UserSettings = JSON.parse(await window.tb.fs.promises.readFile(`/home/${await window.tb.user.username()}/settings.json`));
 				const scramjetHandler = new ScramjetHandler(Controller, sw, window.__scramjet$config, window.__scramjet$flags);
 				scramjetHandler.setTransports();
 				// @ts-expect-error
 				window.scramjetTb = scramjetHandler;
-				if (settings.wispServer === null) {
-					// @ts-expect-error
-					window.tb.libcurl.set_websocket(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
-				} else {
-					window.tb.libcurl.set_websocket(settings.wispServer);
-				}
+				window.tb.libcurl.set_websocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`);
 				return true;
 			},
 			async encode(url: string, encoder: string) {
@@ -702,7 +696,7 @@ export default async function Api() {
 						animations: true,
 						proxy: "Scramjet",
 						transport: "Default (Libcurl)",
-						wispServer: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`,
+						wispServer: `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`,
 						"battery-percent": false,
 						accent: "#32ae62",
 						times: {
@@ -1659,12 +1653,7 @@ export default async function Api() {
 		window.tb.libcurl.set_websocket(srv);
 	};
 	const wsld = async () => {
-		const settings: UserSettings = JSON.parse(await window.tb.fs.promises.readFile(`/home/${await window.tb.user.username()}/settings.json`, "utf8"));
-		if (settings.wispServer === null) {
-			libcurlload(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
-		} else {
-			libcurlload(settings.wispServer);
-		}
+		libcurlload(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`);
 	};
 	let triggered = false;
 	const down = (e: KeyboardEvent) => {

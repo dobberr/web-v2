@@ -221,7 +221,7 @@ export default function Updater() {
 				await window.tb.fs.promises.writeFile("/system/tmp/terb-upd/wisp-servers.json", await window.tb.fs.promises.readFile("/apps/system/settings.tapp/wisp-servers.json"));
 			} else {
 				const stockDat = [
-					{ id: `${location.protocol.replace("http", "ws")}//${location.host}/wisp/`, name: "Magma Wisp" },
+					{ id: `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`, name: "Magma Wisp" },
 				];
 				await window.tb.fs.promises.writeFile("/system/tmp/terb-upd/wisp-servers.json", JSON.stringify(stockDat));
 			}

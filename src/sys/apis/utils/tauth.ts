@@ -10,7 +10,7 @@ export const auth = createAuthClient({
 				window.libcurlLock = true;
 				libcurl.load_wasm("https://cdn.jsdelivr.net/npm/libcurl.js@latest/libcurl.wasm");
 				// @ts-expect-error no types
-				libcurl.set_websocket(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
+				libcurl.set_websocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`);
 				console.log("libcurl wasm loaded");
 			}
 			const savedCookies = localStorage.getItem("libcurl_cookies") || "";

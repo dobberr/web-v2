@@ -2,8 +2,6 @@ import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import Boot from "./Boot.tsx";
-import CustomOS from "./CustomOS.tsx";
 import { hash } from "./hash.json";
 import Loader from "./Loading.tsx";
 import Login from "./Login.tsx";
@@ -16,7 +14,6 @@ const { Controller } = $scramjetController;
 
 const Root = () => {
 	const [currPag, setPag] = useState(<Loader />);
-	const params = new URLSearchParams(window.location.search);
 	useEffect(() => {
 		window.__scramjet$config = {
 			prefix: "/service/",
@@ -64,35 +61,30 @@ const Root = () => {
 		if (!window.sjint) {
 			tempTransport();
 		}
+		const launchNormal = async () => {
+			let sha;
+			if (await fileExists("/system/etc/terbium/hash.cache")) {
+				sha = await window.tb.fs.promises.readFile("/system/etc/terbium/hash.cache", "utf8");
+			} else {
+				sha = hash;
+			}
+			if (localStorage.getItem("setup")) {
+				if (sha !== hash || sessionStorage.getItem("migrateFs")) {
+					setPag(<Updater />);
+				} else if (sessionStorage.getItem("logged-in") === "true") {
+					setPag(<App />);
+				} else {
+					setPag(<Login />);
+				}
+			} else {
+				setPag(<Setup />);
+			}
+		};
 		if (sessionStorage.getItem("recovery")) {
 			setPag(<Recovery />);
-		} else if (sessionStorage.getItem("boot") || params.get("boot")) {
-			const upd = async () => {
-				let sha;
-				if (await fileExists("/system/etc/terbium/hash.cache")) {
-					sha = await window.tb.fs.promises.readFile("/system/etc/terbium/hash.cache", "utf8");
-				} else {
-					sha = hash;
-				}
-				if (localStorage.getItem("setup")) {
-					if (localStorage.getItem("setup") && (sha !== hash || sessionStorage.getItem("migrateFs"))) {
-						setPag(<Updater />);
-					} else {
-						if (sessionStorage.getItem("logged-in") && sessionStorage.getItem("logged-in") === "true") {
-							setPag(<App />);
-						} else {
-							setPag(<Login />);
-						}
-					}
-				} else {
-					setPag(<Setup />);
-				}
-			};
-			upd();
-		} else if (sessionStorage.getItem("cusboot")) {
-			setPag(<CustomOS />);
 		} else {
-			setPag(<Boot />);
+			sessionStorage.setItem("boot", "true");
+			launchNormal();
 		}
 	}, []);
 	return currPag;

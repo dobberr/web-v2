@@ -213,15 +213,12 @@ function newTab() {
 		if (document.querySelector(".left-arrow").classList.contains("disabled")) {
 			document.querySelector(".left-arrow").classList.remove("disabled");
 		}
-		if (updateTab === false) {
-			const scramjetFrame = tab_content._scramjetFrame;
-			if (scramjetFrame && scramjetFrame.url) {
-				urlbar.value = scramjetFrame.url;
-			} else {
+			if (updateTab === false) {
+				// The iframe location is Scramjet's encoded /service/ URL. Never
+				// expose that internal representation in the address bar.
 				const encodedUrl = tab_content.contentWindow.window.location.href.replace(/^.*\/service\//, "");
 				urlbar.value = customDecode(encodedUrl);
 			}
-		}
 		if (!tab_content.contentDocument.getElementById("tb-cursor-controller")) {
 			const cursor_controller = document.createElement("script");
 			cursor_controller.src = "/cursor_changer.js";

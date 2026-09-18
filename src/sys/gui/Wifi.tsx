@@ -144,7 +144,7 @@ export function WispMenu({ isOpen }: WispMenuProps) {
 			const exists = await fileExists("//apps/system/settings.tapp/wisp-servers.json");
 			if (!exists) {
 				await window.tb.fs.promises.mkdir("//apps/system/settings.tapp/", { recursive: true } as any);
-				const stockDat: Server[] = [{ id: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`, name: "Magma Wisp" }];
+				const stockDat: Server[] = [{ id: `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`, name: "Magma Wisp" }];
 				await window.tb.fs.promises.writeFile("//apps/system/settings.tapp/wisp-servers.json", JSON.stringify(stockDat));
 			}
 			const data: Server[] = JSON.parse(await window.tb.fs.promises.readFile("//apps/system/settings.tapp/wisp-servers.json"));

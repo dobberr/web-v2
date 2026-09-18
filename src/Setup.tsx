@@ -35,12 +35,6 @@ export default function Setup() {
 			setCurrentStep(2.2);
 		} else if (currentStep === 3.1) {
 			setCurrentStep(2.5);
-		} else if (currentStep === 4) {
-			if (sessionStorage.getItem("tacc")) {
-				setCurrentStep(2.5);
-			} else {
-				setCurrentStep(2);
-			}
 		} else {
 			setCurrentStep(prevStep => Math.max(prevStep - 1, 1));
 		}
@@ -50,7 +44,7 @@ export default function Setup() {
 		libcurl.load_wasm("https://cdn.jsdelivr.net/npm/libcurl.js@latest/libcurl.wasm");
 	}
 	// @ts-expect-error no types
-	libcurl.set_websocket(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
+	libcurl.set_websocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`);
 	const authClient = auth;
 	const randomColors = ["orange", "red", "green", "blue", "purple", "pink", "yellow"];
 	const makePFP = () => {
@@ -233,22 +227,14 @@ export default function Setup() {
 			syssettings["setup"] = true;
 		}
 		syssettings["defaultUser"] = usr;
-		const transport = sessionStorage.getItem("selectedTransport") || "Default (Libcurl)";
-		if (transport === "Anura BCC") {
-			settings["transport"] = "Anura BCC";
-		} else {
-			settings["transport"] = "Default (Libcurl)";
-		}
-		const wsrv = sessionStorage.getItem("selectedBare") || `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`;
-		settings["wispServer"] = wsrv;
+		settings["transport"] = "Default (Libcurl)";
+		settings["wispServer"] = `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`;
 		await window.tb.fs.promises.writeFile(`/home/${usr}/settings.json`, JSON.stringify(settings), "utf8");
 		await window.tb.fs.promises.writeFile("/system/etc/terbium/settings.json", JSON.stringify(syssettings), "utf8");
 		window.dispatchEvent(new CustomEvent("oobe-setupstage", { detail: "Finalizing setup..." }));
 		const wispExist = await fileExists("//apps/system/settings.tapp/wisp-servers.json");
 		if (!wispExist) {
-			const stockDat = [
-				{ id: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`, name: "Magma Wisp" },
-			];
+			const stockDat = [{ id: `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`, name: "Magma Wisp" }];
 			await window.tb.fs.promises.writeFile("//apps/system/settings.tapp/wisp-servers.json", JSON.stringify(stockDat));
 		}
 		window.dispatchEvent(new CustomEvent("oobe-setupstage", { detail: "Restarting Magma..." }));
@@ -647,7 +633,7 @@ export default function Setup() {
 		}, [hasSettings]);
 		nextButtonClick = () => {
 			if (!hasSettings) {
-				Next(4);
+				Next(5);
 				sessionStorage.setItem("tacc", "true");
 			} else {
 				Next(3.1);
@@ -712,7 +698,7 @@ export default function Setup() {
 			currentViewRef.current?.classList.add("-translate-x-6");
 			currentViewRef.current?.classList.add("opacity-0");
 			setTimeout(() => {
-				Next(4);
+				Next(5);
 			}, 150);
 		};
 		return (
@@ -904,106 +890,6 @@ export default function Setup() {
 			</div>
 		);
 	};
-	const Step4 = () => {
-		setTimeout(() => {
-			currentViewRef.current?.classList.remove("-translate-x-6");
-			currentViewRef.current?.classList.remove("opacity-0");
-		}, 150);
-
-		nextButtonClick = () => {
-			currentViewRef.current?.classList.add("-translate-x-6");
-			currentViewRef.current?.classList.add("opacity-0");
-			setTimeout(() => {
-				Next();
-			}, 150);
-		};
-
-		const [selectedBare, setSelectedBare] = useState(() => sessionStorage.getItem("selectedBare") || "Backend (Default)");
-		const [selectedTransport, setSelectedTransport] = useState(() => sessionStorage.getItem("selectedTransport") || "Default (Libcurl)");
-		const [bareDropdownOpen, setBareDropdownOpen] = useState(false);
-		const [transportDropdownOpen, setTransportDropdownOpen] = useState(false);
-		const [customServer, setCustomServer] = useState("");
-		const bareOptions = [{ label: "Magma Wisp" }, { label: "Custom Server" }];
-		const transportOptions = [{ label: "Default (Libcurl)" }, { label: "Anura BCC" }];
-		const bClick = (label: any) => {
-			setSelectedBare(label);
-			if (label === "Custom Server") {
-				setCustomServer("");
-			} else if (label === "Magma Wisp") {
-					sessionStorage.setItem("selectedBare", `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
-			}
-			setBareDropdownOpen(false);
-		};
-		const transportOnClick = (label: any) => {
-			setSelectedTransport(label);
-			sessionStorage.setItem("selectedTransport", label);
-			setTransportDropdownOpen(false);
-		};
-		const ServerChange = async (e: any) => {
-			const value = e.target.value;
-			setCustomServer(value);
-			sessionStorage.setItem("selectedBare", value);
-			const stockDat = [
-				{ id: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`, name: "Magma Wisp" },
-				{ id: value, name: "Custom Wisp" },
-			];
-			await window.tb.fs.promises.writeFile("//apps/system/settings.tapp/wisp-servers.json", JSON.stringify(stockDat));
-		};
-
-		return (
-			<div
-				ref={el => {
-					currentViewRef.current = el;
-				}}
-				className="duration-150 -translate-x-6 opacity-0 flex flex-col justify-center items-center"
-			>
-				<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Customize Proxy Settings</span>
-				<div className="dropdown def-proxy mr-[185px]">
-					<div className="dropdown-title" onMouseDown={() => setBareDropdownOpen(prev => !prev)}>
-						<span className="pointer-events-none">{selectedBare}</span>
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-[22px] h-[22px] pointer-events-none">
-							<path fillRule="evenodd" d="M11.47 4.72a.75.75 0 011.06 0l3.75 3.75a.75.75 0 01-1.06 1.06L12 6.31 8.78 9.53a.75.75 0 01-1.06-1.06l3.75-3.75zm-3.75 9.75a.75.75 0 011.06 0L12 17.69l3.22-3.22a.75.75 0 111.06 1.06l-3.75 3.75a.75.75 0 01-1.06 0l-3.75-3.75a.75.75 0 010-1.06z" clipRule="evenodd" />
-						</svg>
-					</div>
-					{bareDropdownOpen && (
-						<div className="dropdown-options active">
-							{bareOptions.map((option, index) => (
-								<div className="dropdown-option" key={index} onMouseDown={() => bClick(option.label)}>
-									<span className="pointer-events-none">{option.label}</span>
-								</div>
-							))}
-						</div>
-					)}
-				</div>
-				<div className="dropdown def-transport ml-[230px] mt-[-42px]">
-					<div className="dropdown-title" onMouseDown={() => setTransportDropdownOpen(prev => !prev)}>
-						<span className="pointer-events-none">{selectedTransport}</span>
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-[22px] h-[22px] pointer-events-none">
-							<path fillRule="evenodd" d="M11.47 4.72a.75.75 0 011.06 0l3.75 3.75a.75.75 0 01-1.06 1.06L12 6.31 8.78 9.53a.75.75 0 01-1.06-1.06l3.75-3.75zm-3.75 9.75a.75.75 0 011.06 0L12 17.69l3.22-3.22a.75.75 0 111.06 1.06l-3.75 3.75a.75.75 0 01-1.06 0l-3.75-3.75a.75.75 0 010-1.06z" clipRule="evenodd" />
-						</svg>
-					</div>
-					{transportDropdownOpen && (
-						<div className="dropdown-options active">
-							{transportOptions.map((option, index) => (
-								<div className="dropdown-option" key={index} onMouseDown={() => transportOnClick(option.label)}>
-									<span className="pointer-events-none">{option.label}</span>
-								</div>
-							))}
-						</div>
-					)}
-				</div>
-				{selectedBare === "Custom Server" && (
-					<input
-						type="url"
-						value={customServer}
-						onChange={ServerChange}
-						placeholder="Enter custom server"
-						className="custom rounded-[6px] px-[10px] py-[8px] mt-[10px] bg-[#ffffff0a] border-[#ffffff22] border-[1px] text-[#ffffff] caret-[#ffffff] placeholder-[#ffffff38] ring-[transparent] ring-0 focus:bg-[#ffffff1f] focus:border-[#73a9ffd6] focus:outline-hidden duration-150"
-					/>
-				)}
-			</div>
-		);
-	};
 	const Step5 = () => {
 		const ranRef = useRef(false);
 		const actionRef = useRef<HTMLParagraphElement | null>(null);
@@ -1123,8 +1009,6 @@ export default function Setup() {
 						<Step2CF />
 					) : currentStep === 3.1 ? (
 						<Step3SR />
-					) : currentStep === 4 ? (
-						<Step4 />
 					) : currentStep === 5 ? (
 						<Step5 />
 					) : null}

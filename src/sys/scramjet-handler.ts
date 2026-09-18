@@ -21,13 +21,13 @@ export class ScramjetHandler {
 			if (localStorage.getItem("setup")) {
 				if (sessionStorage.getItem("currAcc")) {
 					const settings: UserSettings = JSON.parse(await window.tb.fs.promises.readFile(`/home/${sessionStorage.getItem("currAcc")}/settings.json`, "utf8"));
-					this.wispUrl = settings.wispServer;
+					this.wispUrl = `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`;
 					this.transportVar = settings.transport;
 					this.scramjetFlags = settings.scramjetFlags || flags;
 				} else {
 					const syssettings: SysSettings = JSON.parse(await window.tb.fs.promises.readFile("/system/etc/terbium/settings.json", "utf8"));
 					const usersettings: UserSettings = JSON.parse(await window.tb.fs.promises.readFile(`/home/${syssettings.defaultUser}/settings.json`, "utf8"));
-					this.wispUrl = usersettings.wispServer;
+					this.wispUrl = `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`;
 					this.transportVar = usersettings.transport;
 					this.scramjetFlags = usersettings.scramjetFlags || flags;
 				}
