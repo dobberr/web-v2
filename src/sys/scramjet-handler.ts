@@ -2,7 +2,6 @@ import LibcurlClient from "../sys/apis/utils/libcurl-wrapper";
 import { SJConfig, SJFlags, SysSettings, UserSettings } from "./types";
 import { defaultConfigDev } from "@mercuryworkshop/scramjet";
 import { AnuraBareClient } from "./liquor/bcc";
-import { resolveWisp } from "./runtime-config";
 
 export class ScramjetHandler {
 	transportVar!: UserSettings["transport"];
@@ -22,18 +21,18 @@ export class ScramjetHandler {
 			if (localStorage.getItem("setup")) {
 				if (sessionStorage.getItem("currAcc")) {
 					const settings: UserSettings = JSON.parse(await window.tb.fs.promises.readFile(`/home/${sessionStorage.getItem("currAcc")}/settings.json`, "utf8"));
-					this.wispUrl = resolveWisp(settings.wispServer);
+					this.wispUrl = settings.wispServer;
 					this.transportVar = settings.transport;
 					this.scramjetFlags = settings.scramjetFlags || flags;
 				} else {
 					const syssettings: SysSettings = JSON.parse(await window.tb.fs.promises.readFile("/system/etc/terbium/settings.json", "utf8"));
 					const usersettings: UserSettings = JSON.parse(await window.tb.fs.promises.readFile(`/home/${syssettings.defaultUser}/settings.json`, "utf8"));
-					this.wispUrl = resolveWisp(usersettings.wispServer);
+					this.wispUrl = usersettings.wispServer;
 					this.transportVar = usersettings.transport;
 					this.scramjetFlags = usersettings.scramjetFlags || flags;
 				}
 			} else {
-				this.wispUrl = resolveWisp(null);
+				this.wispUrl = `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`;
 				this.transportVar = "Default (Libcurl)";
 			}
 		})();

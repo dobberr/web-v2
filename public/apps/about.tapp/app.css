@@ -3,6 +3,23 @@
 	src: url(/fonts/Inter.ttf);
 }
 
+@font-face {
+	font-family: Exbed;
+	src: url(/fonts/exbed.woff2) format("woff2"), url(/fonts/exbed.woff) format("woff");
+	font-display: swap;
+}
+
+.magma-logo {
+	font-family: Exbed, Inter, sans-serif;
+	font-size: clamp(4rem, 12vw, 9rem);
+	line-height: 0.9;
+	letter-spacing: 0.02em;
+	background: linear-gradient(to bottom, #ffffff, #ffffff77);
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+}
+
 h1 {
 	font-family: Inter;
 	font-weight: 700;

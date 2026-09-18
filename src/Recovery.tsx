@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { version } from "../package.json";
 import { libcurl } from "libcurl.js";
-import { configuredWisp } from "./sys/runtime-config";
 import { dirExists, unzip } from "./sys/types";
 import { hash } from "./hash.json";
 import apps from "./apps.json";
@@ -241,7 +240,7 @@ export default function Recovery() {
 			await libcurl.load_wasm("https://cdn.jsdelivr.net/npm/libcurl.js@latest/libcurl.wasm");
 		}
 		// @ts-expect-error types
-		libcurl.set_websocket(configuredWisp());
+		libcurl.set_websocket(`${window.location.protocol.replace("http", "ws")}//${window.location.hostname}:${window.location.port}/wisp/`);
 		const response = await libcurl.fetch(url);
 		if (!response.ok) {
 			throw new Error(`Failed to download the file. Status: ${response.status}`);
@@ -423,7 +422,7 @@ export default function Recovery() {
 					</div>
 				</div>
 				<div ref={progresscheck} className="hidden bg-[#0e0e0e] h-full justify-center items-center flex-col lg:h-full md:h-full">
-					<img src="/tb.svg" alt="Magma" className="w-[25%] h-[25%]" />
+					<div aria-label="Magma" className="magma-logo">Magma</div>
 					<div className="duration-150 flex flex-col justify-center items-center">
 						<div className="text-container relative flex flex-col justify-center items-end">
 							<div className="bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text flex flex-col lg:items-center md:items-center sm:items-center">

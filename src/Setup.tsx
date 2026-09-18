@@ -11,7 +11,6 @@ import { fileExists, User } from "./sys/types";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { libcurl } from "libcurl.js";
 import { auth, getinfo, setinfo } from "./sys/apis/utils/tauth";
-import { configuredAuthBaseUrl, configuredWisp } from "./sys/runtime-config";
 const pw = new pwd();
 
 export default function Setup() {
@@ -51,7 +50,7 @@ export default function Setup() {
 		libcurl.load_wasm("https://cdn.jsdelivr.net/npm/libcurl.js@latest/libcurl.wasm");
 	}
 	// @ts-expect-error no types
-	libcurl.set_websocket(configuredWisp());
+	libcurl.set_websocket(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
 	const authClient = auth;
 	const randomColors = ["orange", "red", "green", "blue", "purple", "pink", "yellow"];
 	const makePFP = () => {
@@ -240,7 +239,7 @@ export default function Setup() {
 		} else {
 			settings["transport"] = "Default (Libcurl)";
 		}
-		const wsrv = sessionStorage.getItem("selectedBare") || configuredWisp();
+		const wsrv = sessionStorage.getItem("selectedBare") || `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`;
 		settings["wispServer"] = wsrv;
 		await window.tb.fs.promises.writeFile(`/home/${usr}/settings.json`, JSON.stringify(settings), "utf8");
 		await window.tb.fs.promises.writeFile("/system/etc/terbium/settings.json", JSON.stringify(syssettings), "utf8");
@@ -248,7 +247,7 @@ export default function Setup() {
 		const wispExist = await fileExists("//apps/system/settings.tapp/wisp-servers.json");
 		if (!wispExist) {
 			const stockDat = [
-				{ id: configuredWisp(), name: "Magma Wisp" },
+				{ id: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`, name: "Magma Wisp" },
 			];
 			await window.tb.fs.promises.writeFile("//apps/system/settings.tapp/wisp-servers.json", JSON.stringify(stockDat));
 		}
@@ -328,7 +327,7 @@ export default function Setup() {
 		useEffect(() => {
 			const test = async () => {
 				try {
-					const response = await libcurl.fetch(`${configuredAuthBaseUrl()}/api/auth/ping`, { method: "GET" });
+					const response = await libcurl.fetch("https://auth.terbiumon.top/api/auth/ping", { method: "GET" });
 					if (!response.ok) {
 						setConnected(false);
 						Back();
@@ -931,7 +930,7 @@ export default function Setup() {
 			if (label === "Custom Server") {
 				setCustomServer("");
 			} else if (label === "Magma Wisp") {
-				sessionStorage.setItem("selectedBare", configuredWisp());
+					sessionStorage.setItem("selectedBare", `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
 			}
 			setBareDropdownOpen(false);
 		};
@@ -945,7 +944,7 @@ export default function Setup() {
 			setCustomServer(value);
 			sessionStorage.setItem("selectedBare", value);
 			const stockDat = [
-				{ id: configuredWisp(), name: "Magma Wisp" },
+				{ id: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`, name: "Magma Wisp" },
 				{ id: value, name: "Custom Wisp" },
 			];
 			await window.tb.fs.promises.writeFile("//apps/system/settings.tapp/wisp-servers.json", JSON.stringify(stockDat));
@@ -1105,7 +1104,7 @@ export default function Setup() {
 		<div className="bg-[#0e0e0e] h-full">
 			<div className="steps-container flex flex-col lg:flex-row md:flex-row w-full h-full overflow-y-hidden">
 				<div className="logo sm:h-full sm:w-1/2 h-1/2 w-full flex flex-col justify-end items-center sm:justify-center sm:items-center overflow-y-hidden">
-					<img src="/assets/img/logo.png" alt="TB" className="w-[240px] lg:w-[480px] h-auto" />
+					<div aria-label="Magma" className="magma-logo text-[5rem] lg:text-[9rem]">Magma</div>
 				</div>
 				<div className="sm:h-full sm:w-1/2 h-1/2 w-full flex flex-col justify-start items-center text-center sm:justify-center sm:items-center overflow-y-hidden">
 					{currentStep === 1 ? (

@@ -28,7 +28,6 @@ import { auth, getinfo, setinfo } from "./apis/utils/tauth";
 import { launchProcs, addStartupProc, removeStartupProc, enableProc, disableProc } from "./apis/utils/startupHandler";
 import { TSLParser } from "./apis/utils/TSLParser";
 import { ScramjetHandler } from "./scramjet-handler";
-import { configuredWisp, resolveWisp } from "./runtime-config";
 const { Controller } = $scramjetController;
 
 const system = new System();
@@ -393,7 +392,12 @@ export default async function Api() {
 				scramjetHandler.setTransports();
 				// @ts-expect-error
 				window.scramjetTb = scramjetHandler;
-				window.tb.libcurl.set_websocket(resolveWisp(settings.wispServer));
+				if (settings.wispServer === null) {
+					// @ts-expect-error
+					window.tb.libcurl.set_websocket(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
+				} else {
+					window.tb.libcurl.set_websocket(settings.wispServer);
+				}
 				return true;
 			},
 			async encode(url: string, encoder: string) {
@@ -698,7 +702,7 @@ export default async function Api() {
 						animations: true,
 						proxy: "Scramjet",
 						transport: "Default (Libcurl)",
-						wispServer: configuredWisp(),
+						wispServer: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`,
 						"battery-percent": false,
 						accent: "#32ae62",
 						times: {
@@ -1561,7 +1565,6 @@ export default async function Api() {
 				libs: "/system/lib/anura/",
 				init: "/system/etc/anura/init/",
 				bin: "/system/bin/anura/",
-				opt: "/system/opt/anura/",
 			},
 		},
 		x86: {
@@ -1657,7 +1660,11 @@ export default async function Api() {
 	};
 	const wsld = async () => {
 		const settings: UserSettings = JSON.parse(await window.tb.fs.promises.readFile(`/home/${await window.tb.user.username()}/settings.json`, "utf8"));
-		libcurlload(resolveWisp(settings.wispServer));
+		if (settings.wispServer === null) {
+			libcurlload(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
+		} else {
+			libcurlload(settings.wispServer);
+		}
 	};
 	let triggered = false;
 	const down = (e: KeyboardEvent) => {

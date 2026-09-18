@@ -12,14 +12,12 @@ import Setup from "./Setup.tsx";
 import { fileExists } from "./sys/types.ts";
 import Updater from "./Updater.tsx";
 import { ScramjetHandler } from "./sys/scramjet-handler.ts";
-import { loadRuntimeConfig } from "./sys/runtime-config.ts";
 const { Controller } = $scramjetController;
 
 const Root = () => {
 	const [currPag, setPag] = useState(<Loader />);
 	const params = new URLSearchParams(window.location.search);
 	useEffect(() => {
-		loadRuntimeConfig();
 		window.__scramjet$config = {
 			prefix: "/service/",
 			scramjetPath: "/scram/scramjet.js",
@@ -50,7 +48,6 @@ const Root = () => {
 			},
 		};
 		const tempTransport = async () => {
-			await loadRuntimeConfig();
 			const sw = await navigator.serviceWorker.register("/anura-sw.js");
 			const scramjetHandler = new ScramjetHandler(Controller, sw, window.__scramjet$config, window.__scramjet$flags);
 			scramjetHandler.setTransports();

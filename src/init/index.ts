@@ -2,10 +2,8 @@ import apps from "../apps.json";
 import { hash } from "../hash.json";
 import { dirExists, type TAuthSSData, type UserSettings } from "../sys/types";
 import { copyfs } from "./fs.init";
-import { configuredWisp, loadRuntimeConfig } from "../sys/runtime-config";
 
 export async function init() {
-	await loadRuntimeConfig();
 	/**
 	 * create home structure
 	 */
@@ -111,7 +109,7 @@ export async function init() {
 			// @ts-expect-error
 			proxy: sessionStorage.getItem("selectedProxy") || "Scramjet",
 			transport: sessionStorage.getItem("selectedTransport") || "Default (Libcurl)",
-			wispServer: configuredWisp(),
+			wispServer: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`,
 			"battery-percent": false,
 			accent: "#32ae62",
 			times: {

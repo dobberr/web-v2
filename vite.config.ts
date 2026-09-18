@@ -19,7 +19,7 @@ export default defineConfig({
 		react(),
 		viteStaticCopy({
 			targets: [
-				// These are copied so that Magma works as a static-assets Worker
+				// These are copied so that Magma will still work statically
 				{
 					src: `${scramjetPath}/**/*`.replace(/\\/g, "/"),
 					dest: "scram",
