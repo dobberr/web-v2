@@ -44,11 +44,9 @@ export class Settings {
 
 	static async new(fs: FilerFS, defaultsettings: { [key: string]: any }) {
 		const initial = defaultsettings;
+		const sameOriginWisp = `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/wisp/`;
 
-		if (!initial["wisp-url"]) {
-			const tbs = JSON.parse(await fs.promises.readFile(`/home/${sessionStorage.getItem("currAcc")}/settings.json`, "utf8"));
-			initial["wisp-url"] = tbs.wispServer;
-		}
+		initial["wisp-url"] = sameOriginWisp;
 
 		try {
 			const raw = await fs.promises.readFile("/system/etc/anura/anura_settings.json");
@@ -74,6 +72,10 @@ export class Settings {
 			);
 			fs.writeFile("/system/etc/anura/anura_settings.json", JSON.stringify(initial));
 		}
+		// Older profiles may contain a URL with an empty port, such as
+		// wss://host:/wisp/. Keep Anura on the same working endpoint too.
+		initial["wisp-url"] = sameOriginWisp;
+		await fs.promises.writeFile("/system/etc/anura/anura_settings.json", JSON.stringify(initial));
 
 		return new Settings(fs, initial);
 	}

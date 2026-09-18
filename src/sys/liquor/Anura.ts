@@ -125,6 +125,11 @@ export class Anura {
 
 	static async new(config: any): Promise<Anura> {
 		// File System Initialization //
+		try {
+			await window.tb.fs.promises.mkdir("/opt");
+		} catch {
+			// The directory already exists on upgraded profiles.
+		}
 		const filerProvider = new TFSProvider(window.tb.fs);
 		// @ts-expect-error
 		const fs = new AnuraFilesystem([filerProvider]);

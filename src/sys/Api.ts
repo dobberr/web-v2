@@ -1559,6 +1559,7 @@ export default async function Api() {
 				libs: "/system/lib/anura/",
 				init: "/system/etc/anura/init/",
 				bin: "/system/bin/anura/",
+				opt: "/opt",
 			},
 		},
 		x86: {
@@ -1675,11 +1676,11 @@ export default async function Api() {
 	await window.tb.proxy.updateSWs();
 	await window.tb.vfs.mountAll();
 	const getchangelog = async () => {
-		const response = await window.tb.libcurl.fetch("/api/changelog/versions.json");
+		const response = await window.tb.libcurl.fetch(new URL("/api/changelog/versions.json", window.location.origin).href);
 		if (!response.ok) return;
 		const reCache: Record<string, { hash: string; changeFile: string }> = await response.json();
 		const vInf = reCache[system.version("string") as string];
-		if (hash === vInf.hash) {
+		if (vInf && hash === vInf.hash) {
 			window.tb.window.create({
 				title: "Changelog",
 				src: vInf.changeFile,
