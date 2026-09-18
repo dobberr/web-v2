@@ -7,7 +7,7 @@ export default function CustomOS() {
 		const rep = (content: string) => {
 			const parser = new DOMParser();
 			const doc = parser.parseFromString(content, "text/html");
-			console.log(`Terbium Bootloader v2.3.0 is now loading: ${sessionStorage.getItem("bootfile")}`);
+			console.log(`Magma Bootloader v2.3.0 is now loading: ${sessionStorage.getItem("bootfile")}`);
 			if (doc.body && doc.head) {
 				const b = document.createElement("base");
 				b.href = `/fs/${sessionStorage.getItem("bootfile")!.replace(/\/?[^\/]+\.html$/, "")}/`;
@@ -109,12 +109,12 @@ export default function CustomOS() {
 
 	return (
 		<div className="bg-[#0e0e0e] h-full justify-center items-center flex flex-col lg:h-full md:h-full">
-			<img src="/tb.svg" alt="Terbium" className="w-[25%] h-[25%]" />
+			<img src="/tb.svg" alt="Magma" className="w-[25%] h-[25%]" />
 			<div className="duration-150 flex flex-col justify-center items-center">
 				<div className="text-container relative flex flex-col justify-center items-end">
 					<div className="bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text flex flex-col lg:items-center md:items-center sm:items-center">
 						<span className="font-[700] lg:text-[34px] md:text-[28px] sm:text-[22px] text-right duration-150">
-							<span className="font-[1000] duration-150">Terbium Bootloader</span>
+							<span className="font-[1000] duration-150">Magma Bootloader</span>
 						</span>
 						<br />
 						<p>Press ESC to return to boot menu</p>

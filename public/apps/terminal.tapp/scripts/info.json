@@ -50,7 +50,7 @@
 	},
 	{
 		"name": "pkg",
-		"description": "Package manager for Terbium",
+		"description": "Package manager for Magma",
 		"usage": "pkg <command> [package]",
 		"options": {
 			"install": "Install a package",
@@ -62,7 +62,7 @@
 	},
 	{
 		"name": "git",
-		"description": "Git for Terbium",
+		"description": "Git for Magma",
 		"usage": "git [command]",
 		"options": {
 			"clone": "Clones a repository",
@@ -230,7 +230,7 @@
 	},
 	{
 		"name": "tb",
-		"description": "Command for debugging terbium and interacting directly with it's API's",
+		"description": "Command for debugging magma and interacting directly with it's API's",
 		"usage": "tb [subcmd] [subcmd] ... <args>"
 	},
 	{

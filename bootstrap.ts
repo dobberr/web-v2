@@ -2,25 +2,24 @@ import AdmZip from "adm-zip";
 import { exec } from "child_process";
 import consola from "consola";
 import fs from "fs";
-import open from "open";
 import path from "path";
 import { fileURLToPath } from "url";
 import { version } from "./package.json";
 import { TServer } from "./server";
 
-consola.info("Bootstrapping TerbiumOS [v" + version + "]");
+consola.info("Bootstrapping Magma [v" + version + "]");
 
 export default async function Bootstrap() {
 	const args = process.argv;
 	const nodever = fs.readFileSync(".node_version", "utf-8").trim();
 	if (process.version < nodever) {
-		consola.warn("Your version of Node.JS is not supported. Please update node to use Terbium. (Current version: " + process.version + ", Required version: " + nodever + " or higher)");
+		consola.warn("Your version of Node.JS is not supported. Please update Node.js to use Magma. (Current version: " + process.version + ", Required version: " + nodever + " or higher)");
 	}
 	await BuildApps();
 	await CreateAppsPaths();
 	if (!fs.existsSync(".env")) await CreateEnv();
-	await Updater();
-	consola.success("TerbiumOS bootstrapped successfully");
+	if (!args.includes("--apps-only")) await Updater();
+	consola.success("Magma bootstrapped successfully");
 	if (!(args.includes("--apps-only") || args.includes("--dev"))) {
 		TServer();
 	}
@@ -76,20 +75,11 @@ export async function BuildApps() {
 	exec("git rev-parse HEAD", (error, stdout, stderr) => {
 		if (error || stderr) {
 			consola.error("Failed to get git commit hash");
-			fs.writeFileSync(path.join(__dirname, "./src/hash.json"), JSON.stringify({ hash: "2b14b5", repository: "terbiumos/web-v2" }, null, 2), "utf-8");
+			fs.writeFileSync(path.join(__dirname, "./src/hash.json"), JSON.stringify({ hash: "local", repository: null }, null, 2), "utf-8");
 		} else {
 			const hash = stdout.trim();
-			exec("git remote get-url origin", (remoteError, remoteStdout, remoteStderr) => {
-				const repoUrl = remoteStdout.trim();
-				const data = { hash, repository: repoUrl.replace("https://github.com/", "") };
-				if (remoteError || remoteStderr) {
-					consola.error("Failed to get repository URL");
-					fs.writeFileSync(path.join(__dirname, "./src/hash.json"), JSON.stringify({ hash: null, repository: null }, null, 2), "utf-8");
-				} else {
-					fs.writeFileSync(path.join(__dirname, "./src/hash.json"), JSON.stringify(data, null, 2), "utf-8");
-					consola.success(`Git hash and repo saved to ${path.join(__dirname, "./src/hash.json")}`);
-				}
-			});
+			fs.writeFileSync(path.join(__dirname, "./src/hash.json"), JSON.stringify({ hash, repository: null }, null, 2), "utf-8");
+			consola.success(`Git hash saved to ${path.join(__dirname, "./src/hash.json")}`);
 		}
 	});
 	return true;
@@ -189,29 +179,27 @@ export async function CreateEnv() {
 }
 
 export async function Updater() {
+	const manifestUrl = process.env.UPDATE_MANIFEST_URL;
+	if (!manifestUrl) {
+		consola.info("Automatic updates are disabled; set UPDATE_MANIFEST_URL to enable them.");
+		return true;
+	}
 	consola.start("Checking for updates...");
-	exec("git remote get-url origin", async (remoteError, remoteStdout, remoteStderr) => {
-		if (remoteError || remoteStderr) {
-			consola.error("Failed to get local repository URL");
-			return;
-		}
-		const repo = `https://raw.githubusercontent.com/${remoteStdout.trim().replace("https://github.com/", "").replace(".git", "")}/refs/heads/main/package.json` || "https://raw.githubusercontent.com/TerbiumOS/web-v2/refs/heads/main/package.json";
-		try {
-			const response = await fetch(repo);
+	try {
+		const response = await fetch(manifestUrl);
 			const ver = (await response.json()).version;
 			if (ver > version) {
-				const res = await consola.prompt(`A new version of Terbium is available. Would you like to download it? (New Version: ${ver}, Current: ${version})`, {
+				const res = await consola.prompt(`A new version of Magma is available. Would you like to download it? (New Version: ${ver}, Current: ${version})`, {
 					type: "confirm",
 				});
 				if (res) {
 					consola.info("Downloading new version...");
-					exec("git pull", async (remoteError, remoteStdout, remoteStderr) => {
+					exec("git pull", async (remoteError, _remoteStdout, remoteStderr) => {
 						if (remoteError || remoteStderr) {
-							consola.error("Failed to update Terbium, Please update manually");
-							open(`${remoteStdout.trim()}/releases/latest`);
+							consola.error("Failed to update Magma, please update manually.");
 							return;
 						}
-						consola.success("Terbium updated successfully");
+						consola.success("Magma updated successfully");
 						await BuildApps();
 						await CreateAppsPaths();
 					});
@@ -219,11 +207,10 @@ export async function Updater() {
 				}
 				return;
 			}
-			consola.success("Terbium is up to date");
-		} catch (e) {
-			consola.error(`Failed to check for updates, ${e}`);
-		}
-	});
+			consola.success("Magma is up to date");
+	} catch (e) {
+		consola.error(`Failed to check for updates, ${e}`);
+	}
 	return true;
 }
 

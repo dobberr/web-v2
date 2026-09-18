@@ -441,7 +441,7 @@
 				const tb = api.tb;
 				const HW_INDEX_PATH = "/apps/system/settings.tapp/hardwareindex.json";
 				const MAINT_REPORT_PATH = "/apps/system/settings.tapp/maintenance-report.json";
-				const VERSIONS_URL = "https://cdn.terbiumon.top/updates/versions.json";
+				const VERSIONS_URL = "/api/updates/versions.json";
 				function badgeColor(level) {
 					if (level === "red")
 						return "#ef4444";
@@ -755,7 +755,7 @@
 												},
 												location: "40.7831,-73.9712",
 												weather: { unit: "Celsius" },
-												"host-name": "terbium",
+												"host-name": "magma",
 											};
 											await tb.fs.promises.writeFile(sys, JSON.stringify(stockSettings, null, 2), "utf8");
 											repaired += 1;
@@ -1203,7 +1203,7 @@
 				<section class="storage-dashboard" style="gap:10px;">
 				<article class="storage-main-card" style="padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
 				<div>
-				<h2 style="font-size:18px;font-weight:800;margin:0;">Terbium Performance Index</h2>
+				<h2 style="font-size:18px;font-weight:800;margin:0;">Magma Performance Index</h2>
 				<p class="detail-control-value" style="margin:4px 0 0 0;">Runs a local benchmark and scores your machine from 1.0 to 9.9.</p>
 				</div>
 				<div style="display:flex;gap:8px;flex-wrap:wrap;">

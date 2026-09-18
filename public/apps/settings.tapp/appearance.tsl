@@ -444,7 +444,7 @@
 						title: "Where do you want to load the wallpaper from?",
 						options: [
 							{ text: "System Storage", value: "sys" },
-							{ text: "Terbium File System", value: "fs" },
+							{ text: "Magma File System", value: "fs" },
 							{ text: "Internet Url", value: "url" },
 						],
 						onOk: async choice => {

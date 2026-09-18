@@ -164,7 +164,7 @@ async function git(args) {
 					corsProxy: "https://cors.isomorphic-git.org",
 					author: {
 						name: user,
-						email: `${user}@terbiumon.top`,
+					email: `${user}@magma.local`,
 					},
 					onMessage: e => {
 						displayOutput(e);
@@ -193,7 +193,7 @@ async function git(args) {
 								},
 								author: {
 									name: user,
-									email: `${user}@terbiumon.top`,
+								email: `${user}@magma.local`,
 								},
 								onAuth: () => {
 									return { username, password };
@@ -257,7 +257,7 @@ async function git(args) {
 					corsProxy: "https://cors.isomorphic-git.org",
 					author: {
 						name: user,
-						email: `${user}@terbiumon.top`,
+					email: `${user}@magma.local`,
 					},
 					message: commitMessage,
 				});

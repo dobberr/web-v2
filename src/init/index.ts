@@ -2,8 +2,10 @@ import apps from "../apps.json";
 import { hash } from "../hash.json";
 import { dirExists, type TAuthSSData, type UserSettings } from "../sys/types";
 import { copyfs } from "./fs.init";
+import { configuredWisp, loadRuntimeConfig } from "../sys/runtime-config";
 
 export async function init() {
+	await loadRuntimeConfig();
 	/**
 	 * create home structure
 	 */
@@ -58,7 +60,7 @@ export async function init() {
 			weather: {
 				unit: "Celsius",
 			},
-			"host-name": "terbium",
+			"host-name": "magma",
 		};
 		await window.tb.fs.promises.writeFile("/system/etc/terbium/settings.json", JSON.stringify(stockSettings));
 		await window.tb.fs.promises.writeFile("/system/etc/terbium/sudousers.json", JSON.stringify([]));
@@ -109,7 +111,7 @@ export async function init() {
 			// @ts-expect-error
 			proxy: sessionStorage.getItem("selectedProxy") || "Scramjet",
 			transport: sessionStorage.getItem("selectedTransport") || "Default (Libcurl)",
-			wispServer: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`,
+			wispServer: configuredWisp(),
 			"battery-percent": false,
 			accent: "#32ae62",
 			times: {
@@ -285,14 +287,7 @@ export async function init() {
 			await window.tb.fs.promises.writeFile(
 				`/apps/user/${user}/app store/repos.json`,
 				JSON.stringify([
-					{
-						name: "TB App Repo",
-						url: "https://raw.githubusercontent.com/TerbiumOS/tb-repo/refs/heads/main/manifest.json",
-					},
-					{
-						name: "XSTARS XTRAS",
-						url: "https://raw.githubusercontent.com/Notplayingallday383/app-repo/refs/heads/main/manifest.json",
-					},
+					// Repositories can be added from Settings after deployment.
 					{
 						name: "Anura App Repo",
 						url: "https://raw.githubusercontent.com/MercuryWorkshop/anura-repo/refs/heads/master/manifest.json",

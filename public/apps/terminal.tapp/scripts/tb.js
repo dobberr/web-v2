@@ -9,7 +9,7 @@ var cmdData = {
 		},
 	},
 	restart: {
-		desc: "Restarts TerbiumOS",
+		desc: "Restarts MagmaOS",
 		usage: "tb restart <args>",
 		alias: "reboot",
 		args: {
@@ -18,7 +18,7 @@ var cmdData = {
 		},
 	},
 	process: {
-		desc: "Parent command for listing terbium processes.",
+		desc: "Parent command for listing magma processes.",
 		usage: "tb process [subcmd] ... <args>",
 		alias: "proc",
 		subcmds: {
@@ -37,17 +37,17 @@ var cmdData = {
 		},
 	},
 	system: {
-		desc: "Parent command for details about the terbium system.",
+		desc: "Parent command for details about the magma system.",
 		usage: "tb system [subcmd] ... <args>",
 		alias: "sys",
 		subcmds: {
 			version: {
-				desc: "Display the currently installed Terbium version.",
+				desc: "Display the currently installed Magma version.",
 				usage: "tb system version",
 				alias: "ver",
 			},
 			exportfs: {
-				desc: "Export the terbium filesystem.",
+				desc: "Export the magma filesystem.",
 				usage: "tb system exportfs",
 			},
 			restartNode: {
@@ -82,7 +82,7 @@ var cmdData = {
 		},
 	},
 	network: {
-		desc: "Parent command for interacting with Terbium's networking system",
+		desc: "Parent command for interacting with Magma's networking system",
 		usage: "tb network [subcmd] ... <args>",
 		alias: "net",
 		subcmds: {
@@ -91,11 +91,11 @@ var cmdData = {
 				usage: "tb network proxy [subcmd] ... <args>",
 				subcmds: {
 					active: {
-						desc: "Prints the active proxy in use by Terbium.",
+						desc: "Prints the active proxy in use by Magma.",
 						usage: "tb network proxy active",
 					},
 					set: {
-						desc: "Change the proxy that Terbium will use",
+						desc: "Change the proxy that Magma will use",
 						usage: "tb network proxy set [proxy]",
 						args: {
 							proxy: "The name of the proxy to switch to. CASE SENSITIVE!!!",
@@ -106,7 +106,7 @@ var cmdData = {
 		},
 	},
 	node: {
-		desc: "Parent command for interacting with Terbium's NodeJS container",
+		desc: "Parent command for interacting with Magma's NodeJS container",
 		usage: "tb node [subcmd] ... <args>",
 		subcmds: {
 			restart: {
@@ -180,7 +180,7 @@ async function tb(args) {
 		if (data != null) {
 			formatData(data);
 		}
-		displayOutput(`Terbium System CLI v${ver}`);
+		displayOutput(`Magma System CLI v${ver}`);
 		createNewCommandInput();
 	}
 	switch (args._[0]) {
@@ -207,7 +207,7 @@ async function tb(args) {
 			} else {
 				await window.parent.tb.dialog.Permissions({
 					title: "Confirm restart",
-					message: "Are you sure you want to restart Terbium?",
+					message: "Are you sure you want to restart Magma?",
 					onOk: () => {
 						handleReboot();
 					},
@@ -263,7 +263,7 @@ async function tb(args) {
 					break;
 				case "ver":
 				case "version":
-					displayOutput(`TerbiumOS version ${window.parent.tb.system.version()}`);
+					displayOutput(`MagmaOS version ${window.parent.tb.system.version()}`);
 					createNewCommandInput();
 					break;
 				case "exportfs":

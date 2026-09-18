@@ -1,7 +1,7 @@
 {
-	"name": "Terbium WebOS",
-	"description": "The next generation of Terbium WebOS Built for developers, enthusiests, and consumers to last",
-	"short_name": "Terbium",
+	"name": "Magma WebOS",
+	"description": "A fast, local-first WebOS built for developers, enthusiasts, and consumers",
+	"short_name": "Magma",
 	"start_url": "/?boot=true",
 	"display": "standalone",
 	"background_color": "#D16FFF",

@@ -10,9 +10,9 @@ const parse = {
 	/**
 	 * THIS MAY NOT MAKE IT TO PRODUCTION
 	 *
-	 * Parses the given HTML or TML file and returns a built Terbium window
+	 * Parses the given HTML or TML file and returns a built Magma window
 	 * @param src The source code of the file
-	 * @returns new Terbium window
+	 * @returns new Magma window
 	 * @example parse.build('<window><region><title>My Window</title></region></window>')
 	 * @example parse.build('https://example.com/window.tml')
 	 * @function `parse.build`

@@ -207,7 +207,7 @@ export default function Updater() {
 			};
 			window.onbeforeunload = e => {
 				e.preventDefault();
-				e.returnValue = "Terbium is still updating";
+				e.returnValue = "Magma is still updating";
 			};
 			let sysapps = ["about.tapp", "app store.tapp", "browser.tapp", "calculator.tapp", "feedback.tapp", "files.tapp", "media viewer.tapp", "settings.tapp", "task manager.tapp", "terminal.tapp", "text editor.tapp"];
 			if (await dirExists("/system/tmp/terb-upd/")) {
@@ -221,8 +221,7 @@ export default function Updater() {
 				await window.tb.fs.promises.writeFile("/system/tmp/terb-upd/wisp-servers.json", await window.tb.fs.promises.readFile("/apps/system/settings.tapp/wisp-servers.json"));
 			} else {
 				const stockDat = [
-					{ id: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`, name: "Backend" },
-					{ id: "wss://wisp.terbiumon.top/wisp/", name: "TB Wisp Instance" },
+					{ id: `${location.protocol.replace("http", "ws")}//${location.host}/wisp/`, name: "Magma Wisp" },
 				];
 				await window.tb.fs.promises.writeFile("/system/tmp/terb-upd/wisp-servers.json", JSON.stringify(stockDat));
 			}
@@ -299,7 +298,7 @@ export default function Updater() {
 			const user = sessionStorage.getItem("currAcc") || JSON.parse(await window.tb.fs.promises.readFile("/system/etc/terbium/settings.json", "utf8")).defaultUser;
 			// v2.0-Beta2 update
 			if (!(await fileExists("/apps/installed.json"))) {
-				statusref.current!.innerText = "Installing Terbium v2.0-Beta2 prerequisites...";
+				statusref.current!.innerText = "Installing Magma v2.0-Beta2 prerequisites...";
 				let insapps = [
 					{
 						name: "About",
@@ -412,21 +411,7 @@ export default function Updater() {
 				await window.tb.fs.promises.mkdir(`/apps/user/${user}/app store/`);
 				await window.tb.fs.promises.writeFile(
 					`/apps/user/${user}/app store/repos.json`,
-					JSON.stringify([
-						{
-							name: "TB App Repo",
-							url: "https://raw.githubusercontent.com/TerbiumOS/tb-repo/refs/heads/main/manifest.json",
-						},
-						{
-							name: "XSTARS XTRAS",
-							url: "https://raw.githubusercontent.com/Notplayingallday383/app-repo/refs/heads/main/manifest.json",
-						},
-						{
-							name: "Anura App Repo",
-							url: "https://raw.githubusercontent.com/MercuryWorkshop/anura-repo/refs/heads/master/manifest.json",
-							icon: "https://anura.pro/icon.png",
-						},
-					]),
+						JSON.stringify([]),
 				);
 			}
 			if (!(await fileExists(`/apps/user/${user}/browser/favorites.json`))) {
@@ -628,12 +613,12 @@ export default function Updater() {
 
 	return (
 		<div className="bg-[#0e0e0e] h-full justify-center items-center flex flex-col lg:h-full md:h-full">
-			<img src="/tb.svg" alt="Terbium" className="w-[25%] h-[25%]" />
+			<img src="/tb.svg" alt="Magma" className="w-[25%] h-[25%]" />
 			<div className="duration-150 flex flex-col justify-center items-center">
 				<div className="text-container relative flex flex-col justify-center items-end">
 					<div className="bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text flex flex-col lg:items-center md:items-center sm:items-center">
 						<span className="font-bold lg:text-[34px] md:text-[28px] sm:text-[22px] text-right duration-150">
-							<span className="font-[1000] duration-150">Terbium is updating</span>
+							<span className="font-[1000] duration-150">Magma is updating</span>
 						</span>
 						<br />
 						<p>Please DO NOT close this tab</p>

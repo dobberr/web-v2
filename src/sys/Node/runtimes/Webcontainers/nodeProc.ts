@@ -2,13 +2,13 @@ import { WebContainer } from "@webcontainer/api";
 import getFileTree from "./util/getFileTree";
 
 /**
- * Initialize and boot WebContainer with mounted file tree mirrored from Terbium's FS
+ * Initialize and boot WebContainer with mounted file tree mirrored from Magma's FS
  * @returns Promise resolving to WebContainer instance
  */
 export async function initializeWebContainer(): Promise<WebContainer> {
 	const webContainer = await WebContainer.boot();
 
-	// Start the Nodebox runtime and setup FS mirroring from Terbium's FS on it
+	// Start the Nodebox runtime and setup FS mirroring from Magma's FS on it
 	const fileTree = await getFileTree();
 	await webContainer.mount(fileTree);
 
@@ -24,7 +24,7 @@ export async function initializeWebContainer(): Promise<WebContainer> {
 	console.info("[Node.js Subsystem] WebContainer has been initialized!");
 	window.tb.node.isReady = true;
 	window.tb.process.create("runtime", {
-		name: "Terbium Node.js Runtime",
+		name: "Magma Node.js Runtime",
 		wid: null,
 		src: null,
 		size: null,

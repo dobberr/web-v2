@@ -107,7 +107,7 @@ let isMeasuringMem = false;
 
 async function getTasks() {
 	let mem = cachedMem;
-	const sysRegex = /^Terbium (Alexa Desktop Experience|Service Worker|Node\.js Runtime)$/;
+	const sysRegex = /^Magma (Alexa Desktop Experience|Service Worker|Node\.js Runtime)$/;
 	if ("measureUserAgentSpecificMemory" in window.parent.performance && !isMeasuringMem && Date.now() - lastMemTime > 15000) {
 		isMeasuringMem = true;
 		try {

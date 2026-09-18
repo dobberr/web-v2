@@ -1,6 +1,6 @@
 /**
  * @file src/sys/types.ts
- * @description This file contains all the types and interfaces used in the Terbium system.
+ * @description This file contains all the types and interfaces used in the Magma system.
  */
 
 import { TFSType, FSType, ShellType } from "@terbiumos/tfs";

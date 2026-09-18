@@ -19,7 +19,7 @@ export default defineConfig({
 		react(),
 		viteStaticCopy({
 			targets: [
-				// These are copied so that Terbium will still work statically
+				// These are copied so that Magma works as a static-assets Worker
 				{
 					src: `${scramjetPath}/**/*`.replace(/\\/g, "/"),
 					dest: "scram",

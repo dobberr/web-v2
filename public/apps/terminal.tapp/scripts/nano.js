@@ -239,7 +239,7 @@ async function nano(args) {
 		});
 	}
 	function exitEditor() {
-		setTabTitle("Terbium TSH");
+		setTabTitle("Magma TSH");
 		terbium.setCommandProcessing(true);
 		disposable.dispose();
 		term.write("\x1b[2J\x1b[H");

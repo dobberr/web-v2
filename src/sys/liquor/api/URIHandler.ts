@@ -52,7 +52,7 @@ export class URIHandlerAPI {
 				await window.anura.apps[app.pkg].open(handler.prefix ? [handler.prefix, ...args] : args);
 			} else {
 				window.tb.window.create({
-					title: "Terbium Webview",
+					title: "Magma Webview",
 					src: handler.prefix,
 					size: {
 						width: 460,

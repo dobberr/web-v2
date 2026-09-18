@@ -14,7 +14,7 @@ async function ls(args) {
 		];
 		const header = "| " + columns.map(col => centerText(col.name, col.width)).join(" | ") + " |";
 		const separator = "|" + columns.map(col => "-".repeat(col.width + 2)).join("|") + "|";
-		displayOutput(centerText(`TerbiumOS Network Storage Manager v1.2.0`, header.length));
+		displayOutput(centerText(`MagmaOS Network Storage Manager v1.2.0`, header.length));
 		displayOutput(header);
 		displayOutput(separator);
 		for (const instance of window.parent.tb.vfs.servers) {

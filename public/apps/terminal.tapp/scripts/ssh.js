@@ -10,7 +10,7 @@ const connectionString = args._[0];
 const port = args.p || args.port;
 const identityFile = args.i || args.identity;
 const verbose = args.v || args.verbose;
-const proxyUrl = args.proxy || "wss://ssh-proxy.terbiumon.top/";
+const proxyUrl = args.proxy || sessionStorage.getItem("sshProxyUrl") || `${location.protocol.replace("http", "ws")}//${location.host}/wisp/`;
 if (!connectionString) {
 	displayOutput("Usage: ssh [user@]hostname [-p port] [-i identity_file] [-proxy proxy_url] [-v]");
 	displayOutput("Examples:");

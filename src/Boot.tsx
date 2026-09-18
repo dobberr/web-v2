@@ -153,7 +153,7 @@ export default function Boot() {
 	return (
 		<div className={`overflow-hidden w-full h-full flex justify-center pt-7.5 bg-[#0e0e0e] ${showCursor ? null : "cursor-none"}`}>
 			<div className="flex flex-col items-center w-full p-2 text-[#ffffff48] overflow-hidden">
-				<div className="py-10 w-full flex justify-center text-[#ffffff68] font-bold text-2xl duration-150">Terbium Boot Loader - Version {version}</div>
+				<div className="py-10 w-full flex justify-center text-[#ffffff68] font-bold text-2xl duration-150">Magma Boot Loader - Version {version}</div>
 				<div className="mt-1 p-2 flex flex-col grow overflow-auto w-full border-solid border-[#ffffff68] border-2 rounded-xl">
 					{bootentries.map((entry, index) => (
 						<span

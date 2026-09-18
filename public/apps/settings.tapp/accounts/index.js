@@ -274,7 +274,7 @@ const createAccount = async () => {
 				},
 			});
 		};
-		const ping = await parent.tb.libcurl.fetch("https://auth.terbiumon.top/ping");
+		const ping = await parent.tb.libcurl.fetch(`${window.location.origin}/api/auth/ping`);
 		if (ping.ok) {
 			await tb.dialog.Select({
 				title: "Select Account Type",
@@ -284,7 +284,7 @@ const createAccount = async () => {
 						value: "user",
 					},
 					{
-						text: "Terbium Cloud Account",
+						text: "Magma Cloud Account",
 						value: "tacc",
 					},
 				],

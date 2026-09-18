@@ -11,6 +11,7 @@ import { fileExists, User } from "./sys/types";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { libcurl } from "libcurl.js";
 import { auth, getinfo, setinfo } from "./sys/apis/utils/tauth";
+import { configuredAuthBaseUrl, configuredWisp } from "./sys/runtime-config";
 const pw = new pwd();
 
 export default function Setup() {
@@ -176,7 +177,7 @@ export default function Setup() {
 	const saveData = async () => {
 		window.onbeforeunload = e => {
 			e.preventDefault();
-			e.returnValue = "Terbium is still updating";
+			e.returnValue = "Magma is still updating";
 		};
 		window.dispatchEvent(new CustomEvent("oobe-setupstage", { detail: "Initializing File System..." }));
 		const int = await init();
@@ -239,7 +240,7 @@ export default function Setup() {
 		} else {
 			settings["transport"] = "Default (Libcurl)";
 		}
-		const wsrv = sessionStorage.getItem("selectedBare") || `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`;
+		const wsrv = sessionStorage.getItem("selectedBare") || configuredWisp();
 		settings["wispServer"] = wsrv;
 		await window.tb.fs.promises.writeFile(`/home/${usr}/settings.json`, JSON.stringify(settings), "utf8");
 		await window.tb.fs.promises.writeFile("/system/etc/terbium/settings.json", JSON.stringify(syssettings), "utf8");
@@ -247,12 +248,11 @@ export default function Setup() {
 		const wispExist = await fileExists("//apps/system/settings.tapp/wisp-servers.json");
 		if (!wispExist) {
 			const stockDat = [
-				{ id: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`, name: "Backend" },
-				{ id: "wss://wisp.terbiumon.top/wisp/", name: "TB Wisp Instance" },
+				{ id: configuredWisp(), name: "Magma Wisp" },
 			];
 			await window.tb.fs.promises.writeFile("//apps/system/settings.tapp/wisp-servers.json", JSON.stringify(stockDat));
 		}
-		window.dispatchEvent(new CustomEvent("oobe-setupstage", { detail: "Restarting Terbium..." }));
+		window.dispatchEvent(new CustomEvent("oobe-setupstage", { detail: "Restarting Magma..." }));
 		localStorage.setItem("setup", "true");
 		window.onbeforeunload = null;
 		if (sessionStorage!.getItem("logged-in") === null || sessionStorage!.getItem("logged-in") === undefined || sessionStorage!.getItem("logged-in") === "false") {
@@ -280,7 +280,7 @@ export default function Setup() {
 				<div className="text-container relative flex flex-col justify-center items-end">
 					<div className="bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text flex flex-col lg:items-end md:items-center sm:items-center">
 						<span className="font-[700] lg:text-[34px] md:text-[28px] sm:text-[22px] text-right duration-150">
-							The next generation of <span className="font-[1000] duration-150">Terbium.</span>
+							The next generation of <span className="font-[1000] duration-150">Magma.</span>
 						</span>
 						<span className="font-[1000] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Built to last.</span>
 					</div>
@@ -313,7 +313,7 @@ export default function Setup() {
 							className={`cursor-pointer bg-[#ffffff0a] text-[#ffffff38] border-[#ffffff22] hover:bg-[#ffffff10] hover:text-[#ffffff8d] focus:bg-[#ffffff1f] focus:text-[#ffffff8d] focus:border-[#73a9ffd6] focus:ring-[#73a9ff74] focus:outline-hidden focus:ring-2 ring-[transparent] ring-0 border-[1px] font-[600] px-[20px] py-[8px] rounded-[6px] duration-150 ${currentStep === 5 ? "translate-y-8 opacity-0 pointer-events-none" : ""}`}
 							onMouseDown={() => Next(2.2)}
 						>
-							Terbium Cloud&trade; Account
+							Magma Cloud&trade; Account
 						</button>
 					</div>
 				</div>
@@ -328,7 +328,7 @@ export default function Setup() {
 		useEffect(() => {
 			const test = async () => {
 				try {
-					const response = await libcurl.fetch(`https://auth.terbiumon.top/ping`, { method: "GET" });
+					const response = await libcurl.fetch(`${configuredAuthBaseUrl()}/api/auth/ping`, { method: "GET" });
 					if (!response.ok) {
 						setConnected(false);
 						Back();
@@ -387,7 +387,7 @@ export default function Setup() {
 			>
 				{connected ? (
 					<div className="flex flex-col justify-center items-center">
-						<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Sign in with Terbium Cloud&trade;</span>
+						<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Sign in with Magma Cloud&trade;</span>
 						<div className="relative flex flex-col justify-center items-end">
 							{error && (
 								<div className="w-full p-2 mb-2 bg-red-500/20 border border-red-500/50 rounded-md text-sm text-red-300">
@@ -436,7 +436,7 @@ export default function Setup() {
 					</div>
 				) : (
 					<div>
-						<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Terbium Cloud&trade;</span>
+						<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Magma Cloud&trade;</span>
 						<p>Connecting to Authentication servers please wait...</p>
 					</div>
 				)}
@@ -491,7 +491,7 @@ export default function Setup() {
 				}}
 				className="duration-150 -translate-x-6 opacity-0 flex flex-col justify-center items-center"
 			>
-				<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Create a Terbium Cloud&trade; account</span>
+				<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Create a Magma Cloud&trade; account</span>
 				<div className="relative flex flex-col justify-center items-end">
 					{error && (
 						<div className="w-full p-2 mb-2 bg-red-500/20 border border-red-500/50 rounded-md text-sm text-red-300">
@@ -587,7 +587,7 @@ export default function Setup() {
 				}}
 				className="duration-150 -translate-x-6 opacity-0 flex flex-col justify-center items-center"
 			>
-				<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Reset Terbium Cloud&trade; password</span>
+				<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Reset Magma Cloud&trade; password</span>
 				<div className="relative flex flex-col justify-center items-end">
 					<div className="flex flex-col gap-2 items-center">
 						{error && (
@@ -667,12 +667,12 @@ export default function Setup() {
 				{hasSettings ? (
 					<div>
 						<div className="w-full p-2 mb-2 bg-green-500/20 border border-green-500/50 rounded-md text-sm text-green-300">
-							<InformationCircleIcon className="inline-block w-5 h-5 mr-1" /> Terbium Settings were found for this account.
+							<InformationCircleIcon className="inline-block w-5 h-5 mr-1" /> Magma Settings were found for this account.
 						</div>
 					</div>
 				) : (
 					<div className="w-full p-2 mb-2 bg-red-500/20 border border-red-500/50 rounded-md text-sm text-red-300">
-						<InformationCircleIcon className="inline-block w-5 h-5 mr-1" /> Terbium Settings were not found for this account.
+						<InformationCircleIcon className="inline-block w-5 h-5 mr-1" /> Magma Settings were not found for this account.
 					</div>
 				)}
 				<p>Click next to use this account</p>
@@ -896,7 +896,7 @@ export default function Setup() {
 				}}
 				className="duration-150 -translate-x-6 opacity-0 flex flex-col justify-center items-center"
 			>
-				<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Restore Terbium Settings</span>
+				<span className="font-[800] text-[34px] bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text lg:mb-[20px] md:mb-[20px] sm:mb-[10px] lg:text-[34px] md:text-[28px] sm:text-[22px] duration-150">Restore Magma Settings</span>
 				<div className="flex flex-wrap gap-4 justify-center mt-4 overflow-y-auto max-h-[50%] p-2">
 					{categories.map(cat => (
 						<Card key={cat} cat={cat} />
@@ -924,16 +924,14 @@ export default function Setup() {
 		const [bareDropdownOpen, setBareDropdownOpen] = useState(false);
 		const [transportDropdownOpen, setTransportDropdownOpen] = useState(false);
 		const [customServer, setCustomServer] = useState("");
-		const bareOptions = [{ label: "Backend (Default)" }, { label: "TB Wisp Instance" }, { label: "Custom Server" }];
+		const bareOptions = [{ label: "Magma Wisp" }, { label: "Custom Server" }];
 		const transportOptions = [{ label: "Default (Libcurl)" }, { label: "Anura BCC" }];
 		const bClick = (label: any) => {
 			setSelectedBare(label);
 			if (label === "Custom Server") {
 				setCustomServer("");
-			} else if (label === "Backend (Default)") {
-				sessionStorage.setItem("selectedBare", `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
-			} else if (label === "TB Wisp Instance") {
-				sessionStorage.setItem("selectedBare", `wss://wisp.terbiumon.top/wisp/`);
+			} else if (label === "Magma Wisp") {
+				sessionStorage.setItem("selectedBare", configuredWisp());
 			}
 			setBareDropdownOpen(false);
 		};
@@ -947,8 +945,7 @@ export default function Setup() {
 			setCustomServer(value);
 			sessionStorage.setItem("selectedBare", value);
 			const stockDat = [
-				{ id: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`, name: "Backend" },
-				{ id: "wss://wisp.terbiumon.top/wisp/", name: "TB Wisp Instance" },
+				{ id: configuredWisp(), name: "Magma Wisp" },
 				{ id: value, name: "Custom Wisp" },
 			];
 			await window.tb.fs.promises.writeFile("//apps/system/settings.tapp/wisp-servers.json", JSON.stringify(stockDat));
@@ -1036,7 +1033,7 @@ export default function Setup() {
 					}}
 					className="font-[700] text-[28px] duration-150 -translate-x-6 opacity-0"
 				>
-					Welcome to Terbium.
+					Welcome to Magma.
 				</p>
 				<p ref={actionRef} className="font-bold text-lg text-[#ffffff66] mt-2">
 					Starting Services...

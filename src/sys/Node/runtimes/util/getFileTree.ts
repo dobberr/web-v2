@@ -3,7 +3,7 @@
  */
 
 /**
- * Builds a full file tree for Terbium's File System
+ * Builds a full file tree for Magma's File System
  * @param path The path to start at
  * @returns The flat file tree
  */

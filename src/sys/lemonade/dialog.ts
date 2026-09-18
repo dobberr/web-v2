@@ -54,7 +54,7 @@ export class Dialog {
 		return this.showSaveDialogSync(win, options);
 	}
 	showMessageBoxSync(_win: any, options: MessageBoxOptions) {
-		console.log("Using Terbium dialog system");
+		console.log("Using Magma dialog system");
 		return new Promise(resolve => {
 			window.tb.dialog.Message({
 				title: options.title || "Message",

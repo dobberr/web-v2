@@ -9,7 +9,7 @@ async function sysfetch(args, term) {
 			accent = settings["accent"];
 		}
 		displayOutput("                                 %cSystem Information", "color: #3cc3f0; font-weight: bold; text-decoration: underline;");
-		displayOutput(`%c@@@@@@@@@@@@@@~ B@@@@@@@@#G?.     OS%c: TerbiumOS ${tb.system.version()}`, `color: ${accent}`, "color: #b6b6b6");
+		displayOutput(`%c@@@@@@@@@@@@@@~ B@@@@@@@@#G?.     OS%c: MagmaOS ${tb.system.version()}`, `color: ${accent}`, "color: #b6b6b6");
 		displayOutput("%cB###&@@@@&####^ #@@@&PPPB@@@G.    Kernel%c: Ayla v1.0.0", `color: ${accent}`, "color: #b6b6b6");
 		displayOutput("%c    ~@@@@J     .#@@@P   ~&@@@^    DE%c: Alexa", `color: ${accent}`, "color: #b6b6b6");
 		displayOutput("%c    ^@@@@?     .#@@@@###&@@&7     %c", `color: ${accent}`, "color: #b6b6b6");

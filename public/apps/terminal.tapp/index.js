@@ -16,7 +16,7 @@ import { Terminal } from "https://esm.sh/@xterm/xterm";
  * @property {string} usage How to use the app from the CLI
  */
 
-// This is just to resove the terbium system api's
+// This is just to resove the magma system api's
 const tb = window.tb || window.parent.tb || {};
 
 window.http = http;
@@ -72,7 +72,7 @@ const HISTORY_LIMIT = 1000;
 const HISTORY_FILE = ".bash_history";
 
 class TerminalSession {
-	constructor(name = "Terbium TSH") {
+	constructor(name = "Magma TSH") {
 		this.id = `s-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 		this.name = name;
 		this.container = document.createElement("div");
@@ -121,7 +121,7 @@ class TerminalSession {
 			}
 			if (event.altKey && event.key === "t") {
 				event.preventDefault();
-				createSession("Terbium TSH");
+				createSession("Magma TSH");
 				return false;
 			}
 			if (event.altKey && event.key === "w") {
@@ -475,7 +475,7 @@ function addTabToTitle(session) {
 	const add = win.querySelector(".term-add");
 	if (add && !add.dataset.bound) {
 		add.dataset.bound = "1";
-		add.addEventListener("click", () => createSession("Terbium TSH"));
+		add.addEventListener("click", () => createSession("Magma TSH"));
 	}
 	setActiveTabInTitle();
 }
@@ -494,13 +494,13 @@ function setActiveTabInTitle() {
 	const sel = win.querySelector(`.term-tab[data-sid="${activeSession.id}"]`);
 	if (sel) sel.classList.add("active");
 }
-function createSession(name = "Terbium TSH") {
+function createSession(name = "Magma TSH") {
 	const isFirst = sessions.length === 0;
 	const s = new TerminalSession(name);
 	sessions.push(s);
 	if (isFirst) {
 		try {
-			s.term.writeln(`TerbiumOS [Version: ${tb.system.version()}]`);
+			s.term.writeln(`MagmaOS [Version: ${tb.system.version()}]`);
 			s.term.writeln(`Type 'help' for a list of commands.`);
 		} catch (e) {
 			console.error("Failed to display welcome message", e);
@@ -551,7 +551,7 @@ function closeSession(id) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-	createSession("Terbium TSH");
+	createSession("Magma TSH");
 	window.addEventListener("resize", () => {
 		sessions.forEach(s => s.resize());
 	});

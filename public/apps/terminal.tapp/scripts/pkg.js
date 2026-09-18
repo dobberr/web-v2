@@ -9,19 +9,19 @@ async function pkg(args) {
 		"pkg repo: Changes the Package Managers Fetch repo (Use -r to remove the repo you added)",
 	];
 	let repo = sessionStorage.getItem("pkg-repo") || JSON.parse(await window.parent.tb.fs.promises.readFile(`/apps/user/${sessionStorage.getItem("currAcc")}/app store/repos.json`, "utf8"))[0].url;
-	let rType = sessionStorage.getItem("pkg-type") || "terbium";
+	let rType = sessionStorage.getItem("pkg-type") || "magma";
 	switch (args._[0]) {
 		case "install":
 			if (args._[1]) {
 				const response = await tb.libcurl.fetch(repo);
-				let repoData = rType === "terbium" ? (await response.json()).apps : (await (await tb.libcurl.fetch(repo.replace("manifest.json", "list.json"))).json()).apps;
+				let repoData = rType === "magma" ? (await response.json()).apps : (await (await tb.libcurl.fetch(repo.replace("manifest.json", "list.json"))).json()).apps;
 				const packageName = args._[1];
 				const exactMatch = repoData.find(pkg => pkg.name.toLowerCase() === packageName.toLowerCase());
 				if (exactMatch) {
 					displayOutput(`Installing ${exactMatch.name}...`);
 					if (exactMatch.requirements) {
 						if (exactMatch.requirements.os && semverCompare(exactMatch.requirements.os, window.parent.tb.system.version()) > 0) {
-							displayError(`This app requires terbium version: ${exactMatch.requirements.os} or later`);
+							displayError(`This app requires magma version: ${exactMatch.requirements.os} or later`);
 							createNewCommandInput();
 							return;
 						} else if (exactMatch.requirements.proxy && exactMatch.requirements.proxy !== (await window.parent.tb.proxy.get())) {
@@ -126,12 +126,12 @@ async function pkg(args) {
 				displayOutput("Checking for updates...");
 				const config = JSON.parse(await window.parent.tb.fs.promises.readFile(`/apps/system/${args._[1].toLowerCase()}.tapp/.tbconfig`, "utf8"));
 				const response = await tb.libcurl.fetch(repo);
-				let repoData = rType === "terbium" ? (await response.json()).apps : (await (await tb.libcurl.fetch(repo.replace("manifest.json", "list.json"))).json()).apps;
+				let repoData = rType === "magma" ? (await response.json()).apps : (await (await tb.libcurl.fetch(repo.replace("manifest.json", "list.json"))).json()).apps;
 				const packageName = args._[1];
 				const exactMatch = repoData.find(pkg => pkg.name.toLowerCase() === packageName.toLowerCase());
 				if (exactMatch.requirements) {
 					if (exactMatch.requirements.os && semverCompare(exactMatch.requirements.os, window.parent.tb.system.version()) > 0) {
-						displayError(`This app requires terbium version: ${exactMatch.requirements.os} or later`);
+						displayError(`This app requires magma version: ${exactMatch.requirements.os} or later`);
 						createNewCommandInput();
 						return;
 					} else if (exactMatch.requirements.proxy && exactMatch.requirements.proxy !== (await window.parent.tb.proxy.get())) {
@@ -166,7 +166,7 @@ async function pkg(args) {
 		case "search":
 			if (args._[1]) {
 				const response = await tb.libcurl.fetch(repo);
-				let repoData = rType === "terbium" ? (await response.json()).apps : (await (await tb.libcurl.fetch(repo.replace("manifest.json", "list.json"))).json()).apps;
+				let repoData = rType === "magma" ? (await response.json()).apps : (await (await tb.libcurl.fetch(repo.replace("manifest.json", "list.json"))).json()).apps;
 				const searchTerm = args._[1].toLowerCase();
 				const exactMatch = repoData.find(pkg => pkg.name.toLowerCase() === searchTerm);
 				if (exactMatch) {
@@ -225,7 +225,7 @@ async function pkg(args) {
 						const jsonData = await response.json();
 						let repoType;
 						if ("repo" in jsonData) {
-							repoType = "terbium";
+							repoType = "magma";
 						} else {
 							repoType = "anura";
 						}

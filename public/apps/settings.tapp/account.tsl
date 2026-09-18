@@ -233,7 +233,7 @@
 					return text;
 				}
 				function accountTypeLabel(isCloud) {
-					return isCloud ? "Terbium Cloud™ Account" : "Local Account";
+					return isCloud ? "Magma Cloud™ Account" : "Local Account";
 				}
 				function makeAvatarMarkup(info, username) {
 					const pfp = toRenderableSrc(info.pfp);
@@ -282,7 +282,7 @@
 							if (!tb.dialog?.Select)
 								return resolve(false);
 							tb.dialog.Select({
-								title: "Do you want to upload this profile picture to your Terbium Account?",
+								title: "Do you want to upload this profile picture to your Magma Account?",
 								options: [
 									{ text: "Yes", value: "yes" },
 									{ text: "No", value: "no" },
@@ -423,7 +423,7 @@
 				}
 				function profileMarkup(state) {
 					const usernameValue = safeText(state.info.username, state.user);
-					const hostnameValue = safeText(state.sys["host-name"], "terbium");
+					const hostnameValue = safeText(state.sys["host-name"], "magma");
 					const permValue = safeText(state.info.perm, "user");
 					const pfp = makeAvatarMarkup(state.info, state.user);
 					return `
@@ -498,7 +498,7 @@
 					  <div class="account-header-icon ${state.cloud ? "is-cloud" : "is-local"}">${state.cloud ? "☁" : "L"}</div>
 					  <div class="account-header-body">
 						<div class="account-title">Cloud Account</div>
-						<div class="account-subtitle">Link this user to Terbium Cloud or convert back to local mode.</div>
+						<div class="account-subtitle">Link this user to Magma Cloud or convert back to local mode.</div>
 						<div class="account-badges">
 						  <span class="account-badge ${state.cloud ? "is-cloud" : "is-local"}" data-account-type-switch>${escHtml(state.typeLabel)}</span>
 						</div>
@@ -545,7 +545,7 @@
 								tb.dialog.Select({
 									title: "Select Option",
 									options: [
-										{ text: "Link Terbium Cloud™ Account", value: "cloud" },
+										{ text: "Link Magma Cloud™ Account", value: "cloud" },
 										{ text: "Convert to Local Account", value: "local" },
 									],
 									onOk: value => resolve(value),
@@ -620,7 +620,7 @@
 								tb.dialog.Select({
 									title: "Select Option",
 									options: [
-										{ text: "Link Terbium Cloud™ Account", value: "cloud" },
+										{ text: "Link Magma Cloud™ Account", value: "cloud" },
 										{ text: "Convert to Local Account", value: "local" },
 									],
 									onOk: value => resolve(value),

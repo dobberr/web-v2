@@ -18,5 +18,3 @@ Allow: /
 
 User-agent: YandexBot
 Allow: /
-
-Sitemap: https://terbiumon.top/sitemap.xml

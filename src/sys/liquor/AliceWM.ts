@@ -11,7 +11,7 @@ export interface WindowInformation {
 	icon?: string;
 	src?: string | URL | any;
 	/**
-	 * @description For Terbium Compatability only
+	 * @description For Magma Compatability only
 	 */
 	msg?: any;
 }

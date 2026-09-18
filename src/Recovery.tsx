@@ -66,7 +66,7 @@ export default function Recovery() {
 				),
 			);
 		}
-		await download("https://cdn.terbiumon.top/recovery/latest.zip", "/uploaded.zip");
+		await download("/recovery/latest.zip", "/uploaded.zip");
 		setShowCursor(false);
 		await unzip("//uploaded.zip", "//");
 		await window.tb.fs.promises.mkdir("/system/tmp/");
@@ -385,7 +385,7 @@ export default function Recovery() {
 	return (
 		<div className={`overflow-hidden w-full h-full flex justify-center pt-[30px] bg-[#0e0e0e] ${showCursor ? null : "cursor-none"}`}>
 			<div className="flex flex-col items-center w-full p-2 text-[#ffffff48] overflow-hidden">
-				<div className="py-10 w-full flex justify-center text-[#ffffff68] font-bold text-2xl duration-150">Terbium Recovery Utility - Version {version}</div>
+				<div className="py-10 w-full flex justify-center text-[#ffffff68] font-bold text-2xl duration-150">Magma Recovery Utility - Version {version}</div>
 				<div ref={msgbox} className="hidden mt-1 p-2 flex-col flex-grow overflow-auto w-full border-solid border-[#ffffff68] border-2 rounded-xl z-10">
 					<div className="flex flex-col items-center justify-center h-full">
 						<div className="flex items-center">
@@ -422,12 +422,12 @@ export default function Recovery() {
 					</div>
 				</div>
 				<div ref={progresscheck} className="hidden bg-[#0e0e0e] h-full justify-center items-center flex-col lg:h-full md:h-full">
-					<img src="/tb.svg" alt="Terbium" className="w-[25%] h-[25%]" />
+					<img src="/tb.svg" alt="Magma" className="w-[25%] h-[25%]" />
 					<div className="duration-150 flex flex-col justify-center items-center">
 						<div className="text-container relative flex flex-col justify-center items-end">
 							<div className="bg-linear-to-b from-[#ffffff] to-[#ffffff77] text-transparent bg-clip-text flex flex-col lg:items-center md:items-center sm:items-center">
 								<span className="font-[700] lg:text-[34px] md:text-[28px] sm:text-[22px] text-right duration-150">
-									<span className="font-[1000] duration-150">Terbium is installing</span>
+									<span className="font-[1000] duration-150">Magma is installing</span>
 								</span>
 								<br />
 								<p>Please DO NOT close this tab</p>
@@ -473,7 +473,7 @@ export default function Recovery() {
 							window.location.reload();
 						}}
 					>
-						Reinstall Terbium
+						Reinstall Magma
 					</span>
 					<span
 						className={

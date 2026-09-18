@@ -500,7 +500,7 @@ async function serveFile(path, fsOverride, shOverride) {
 					...corsheaders,
 				},
 			});
-			/* Custom Terbium way lol
+			/* Custom Magma way lol
 			return new Response(JSON.stringify(entries), {
 				headers: {
 					"Content-Type": "application/json",
@@ -673,7 +673,7 @@ workbox.routing.registerRoute(/^(?!.*(\/config.json|\/MILESTONE|\/x86images\/|\/
 	const fs = self.opfs || filerfs;
 	const sh = self.opfssh || filersh;
 
-	// Terbium already has its own way for caching files to the file system so doing it again is just a waste of space
+	// Magma already has its own way for caching files to the file system so doing it again is just a waste of space
 	/*
 		const response = await serveFile(`${basepath}${path}`, fs, sh);
 

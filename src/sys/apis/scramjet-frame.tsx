@@ -370,7 +370,7 @@ function createReactScramjetFrame(controller: ScramjetController, element: HTMLI
 		frameInit: $scramjet.Tap.create<FrameInitHooks>(),
 	};
 
-	const downloadPlugin = new $scramjet.Plugin("terbium-download-handler");
+	const downloadPlugin = new $scramjet.Plugin("magma-download-handler");
 	downloadPlugin.tap(frame.hooks.fetch.response, async (context, props) => {
 		const disposition = getHeader(props.response.headers.toRawHeaders(), "content-disposition");
 		if (!disposition || !/\battachment\b/i.test(disposition)) return;

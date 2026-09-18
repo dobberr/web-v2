@@ -9,6 +9,7 @@ lerna-debug.log*
 vite.config.ts.timestamp-*.mjs
 
 node_modules
+.wrangler
 dist
 dist-ssr
 *.local

@@ -1,16 +1,19 @@
 import { TAuthReturnType } from "../../types";
 import { createAuthClient } from "better-auth/client";
 import { libcurl } from "libcurl.js";
+import { configuredAuthBaseUrl, configuredWisp } from "../../runtime-config";
+
+const authBaseUrl = configuredAuthBaseUrl();
 
 export const auth = createAuthClient({
-	baseURL: "https://auth.terbiumon.top",
+	baseURL: authBaseUrl,
 	fetchOptions: {
 		customFetchImpl: async (input: string | URL | Request, init?: RequestInit | undefined) => {
 			if (!window.libcurlLock) {
 				window.libcurlLock = true;
 				libcurl.load_wasm("https://cdn.jsdelivr.net/npm/libcurl.js@latest/libcurl.wasm");
 				// @ts-expect-error no types
-				libcurl.set_websocket(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
+				libcurl.set_websocket(configuredWisp());
 				console.log("libcurl wasm loaded");
 			}
 			const savedCookies = localStorage.getItem("libcurl_cookies") || "";
@@ -51,7 +54,7 @@ export async function getinfo(user?: string | null, pass?: string | null, settin
 		});
 	}
 
-	const response = await auth.$fetch("https://auth.terbiumon.top/user/info", {
+	const response = await auth.$fetch(`${authBaseUrl}/user/info`, {
 		credentials: "include",
 		method: "GET",
 		headers: {
@@ -61,7 +64,7 @@ export async function getinfo(user?: string | null, pass?: string | null, settin
 	const uinf = !response.error ? response.data : { error: "Failed to fetch user info" };
 
 	const sr = setting
-		? await auth.$fetch(`https://auth.terbiumon.top/kv/retrieve/${setting}`, {
+		? await auth.$fetch(`${authBaseUrl}/kv/retrieve/${setting}`, {
 				credentials: "include",
 				method: "GET",
 				headers: {
@@ -80,7 +83,7 @@ export async function getinfo(user?: string | null, pass?: string | null, settin
 						return JSON.parse(settings.value);
 					} catch (e) {
 						window.tb.notification.Toast({
-							message: "Your session is out of date. Click OK to sign in to Terbium Cloud again",
+							message: "Your session is out of date. Click OK to sign in to Magma Cloud again",
 							application: "System",
 							iconSrc: "/fs/apps/system/about.tapp/icon.svg",
 							onOk: async () => {
@@ -108,7 +111,7 @@ export async function setinfo(user?: string | null, pass?: string | null, settin
 		return { error: "No setting or value to set provided" };
 	}
 
-	const response = await auth.$fetch(`https://auth.terbiumon.top/kv/set/${setting}`, {
+	const response = await auth.$fetch(`${authBaseUrl}/kv/set/${setting}`, {
 		credentials: "include",
 		method: "POST",
 		body: JSON.stringify({

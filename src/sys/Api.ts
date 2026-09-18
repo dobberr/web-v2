@@ -28,6 +28,7 @@ import { auth, getinfo, setinfo } from "./apis/utils/tauth";
 import { launchProcs, addStartupProc, removeStartupProc, enableProc, disableProc } from "./apis/utils/startupHandler";
 import { TSLParser } from "./apis/utils/TSLParser";
 import { ScramjetHandler } from "./scramjet-handler";
+import { configuredWisp } from "./runtime-config";
 const { Controller } = $scramjetController;
 
 const system = new System();
@@ -394,7 +395,7 @@ export default async function Api() {
 				window.scramjetTb = scramjetHandler;
 				if (settings.wispServer === null) {
 					// @ts-expect-error
-					window.tb.libcurl.set_websocket(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
+					window.tb.libcurl.set_websocket(configuredWisp());
 				} else {
 					window.tb.libcurl.set_websocket(settings.wispServer);
 				}
@@ -538,11 +539,11 @@ export default async function Api() {
 				const apps = JSON.parse(await window.tb.fs.promises.readFile("/apps/installed.json", "utf8"));
 				const app = apps.find((a: any) => a.name.toLowerCase() === pkg.toLowerCase());
 				if (!app) throw new Error(`App "${pkg}" not found`);
-				let type: "anura" | "terbium";
+				let type: "anura" | "magma";
 				if (app.config.endsWith("manifest.json") || app.config.endsWith(`${pkg}.json`)) {
 					type = "anura";
 				} else {
-					type = "terbium";
+					type = "magma";
 				}
 				let config: any;
 				if (type === "anura") {
@@ -702,7 +703,7 @@ export default async function Api() {
 						animations: true,
 						proxy: "Scramjet",
 						transport: "Default (Libcurl)",
-						wispServer: `${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`,
+						wispServer: configuredWisp(),
 						"battery-percent": false,
 						accent: "#32ae62",
 						times: {
@@ -805,21 +806,7 @@ export default async function Api() {
 					await window.tb.fs.promises.writeFile(`/home/${username}/desktop/.desktop.json`, JSON.stringify(items));
 					await window.tb.fs.promises.writeFile(
 						`/apps/user/${username}/app store/repos.json`,
-						JSON.stringify([
-							{
-								name: "TB App Repo",
-								url: "https://raw.githubusercontent.com/TerbiumOS/tb-repo/refs/heads/main/manifest.json",
-							},
-							{
-								name: "XSTARS XTRAS",
-								url: "https://raw.githubusercontent.com/Notplayingallday383/app-repo/refs/heads/main/manifest.json",
-							},
-							{
-								name: "Anura App Repo",
-								url: "https://raw.githubusercontent.com/MercuryWorkshop/anura-repo/refs/heads/master/manifest.json",
-								icon: "https://anura.pro/icon.png",
-							},
-						]),
+						JSON.stringify([]),
 					);
 					return true;
 				},
@@ -1000,8 +987,8 @@ export default async function Api() {
 			signIn: () => {
 				return new Promise<any>((resolve, reject) => {
 					window.tb.dialog.WebAuth({
-						title: "Terbium Cloud Sign In",
-						message: "Please sign in to your Terbium Cloud Account to continue.",
+						title: "Magma Cloud Sign In",
+						message: "Please sign in to your Magma Cloud Account to continue.",
 						onOk: async (username: string, password: string) => {
 							await window.tb.tauth.client.signIn.email({
 								email: username,
@@ -1121,7 +1108,7 @@ export default async function Api() {
 					if (error.error.message.toLowerCase() === "unauthorized") {
 						window.tb.dialog.WebAuth({
 							title: "Verify Identity to Update Account",
-							message: "Please sign in to your Terbium Cloud Account to verify it's you.",
+							message: "Please sign in to your Magma Cloud Account to verify it's you.",
 							onOk: async (username: string, password: string) => {
 								await window.tb.tauth.client.signIn.email({
 									email: username,
@@ -1147,7 +1134,7 @@ export default async function Api() {
 				return new Promise<any>((resolve, reject) => {
 					window.tb.dialog.WebAuth({
 						title: "Verify Identity",
-						message: "Please sign in to your Terbium Cloud Account to verify it's you.",
+						message: "Please sign in to your Magma Cloud Account to verify it's you.",
 						onOk: async (username: string, password: string) => {
 							await window.tb.tauth.client.signIn.email({
 								email: username,
@@ -1277,7 +1264,7 @@ export default async function Api() {
 		process: {
 			procs: {
 				0: {
-					name: "Terbium Service Worker",
+					name: "Magma Service Worker",
 					wid: null,
 					pid: 0,
 					src: null,
@@ -1290,7 +1277,7 @@ export default async function Api() {
 					},
 				},
 				1: {
-					name: "Terbium Alexa Desktop Experience",
+					name: "Magma Alexa Desktop Experience",
 					wid: null,
 					pid: 1,
 					src: null,
@@ -1478,7 +1465,7 @@ export default async function Api() {
 							break;
 						case "webpage":
 							createWindow({
-								title: "Terbium Webview",
+								title: "Magma Webview",
 								src: `/fs/${path}`,
 								size: {
 									width: 460,
@@ -1646,7 +1633,7 @@ export default async function Api() {
 			window.tb.notification.Toast({
 				application: "System",
 				iconSrc: "/fs/apps/system/about.tapp/icon.svg",
-				message: "A new version of terbium is ready to install",
+				message: "A new version of magma is ready to install",
 				onOk: async () => {
 					window.location.reload();
 				},
@@ -1658,7 +1645,7 @@ export default async function Api() {
 		window.tb.notification.Toast({
 			application: "System",
 			iconSrc: "/fs/apps/system/about.tapp/icon.svg",
-			message: "A new version of terbium is ready to install",
+			message: "A new version of magma is ready to install",
 			onOk: async () => {
 				window.location.reload();
 			},
@@ -1675,7 +1662,7 @@ export default async function Api() {
 	const wsld = async () => {
 		const settings: UserSettings = JSON.parse(await window.tb.fs.promises.readFile(`/home/${await window.tb.user.username()}/settings.json`, "utf8"));
 		if (settings.wispServer === null) {
-			libcurlload(`${location.protocol.replace("http", "ws")}//${location.hostname}:${location.port}/wisp/`);
+			libcurlload(configuredWisp());
 		} else {
 			libcurlload(settings.wispServer);
 		}
@@ -1700,7 +1687,9 @@ export default async function Api() {
 	await window.tb.proxy.updateSWs();
 	await window.tb.vfs.mountAll();
 	const getchangelog = async () => {
-		const reCache: Record<string, { hash: string; changeFile: string }> = await (await window.tb.libcurl.fetch("https://cdn.terbiumon.top/changelogs/versions.json")).json();
+		const response = await window.tb.libcurl.fetch("/api/changelog/versions.json");
+		if (!response.ok) return;
+		const reCache: Record<string, { hash: string; changeFile: string }> = await response.json();
 		const vInf = reCache[system.version("string") as string];
 		if (hash === vInf.hash) {
 			window.tb.window.create({

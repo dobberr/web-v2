@@ -7,7 +7,7 @@ let viewType = "apps";
 async function loadRepo(url) {
 	const repo = await window.parent.tb.libcurl.fetch(url);
 	let data = await repo.json();
-	let type = "Terbium";
+	let type = "Magma";
 	if (data.maintainer) {
 		type = "Anura";
 		const list = await window.parent.tb.libcurl.fetch(url.replace("manifest.json", "list.json"));
@@ -27,7 +27,7 @@ async function loadRepo(url) {
 	document.querySelector(".main").classList.add("flex");
 	const featured = document.querySelector(".featured");
 	switch (type) {
-		case "Terbium":
+		case "Magma":
 			const featuredList1 = data.apps;
 			const randomIndex1 = Math.floor(Math.random() * featuredList1.length);
 			data.featured = featuredList1[randomIndex1] || {};
@@ -171,7 +171,7 @@ async function loadApp(app, type) {
 		type = "tb-liq";
 	}
 	switch (type) {
-		case "Terbium":
+		case "Magma":
 		case "tb-PWA":
 			const icn1 = await window.parent.tb.libcurl.fetch(app.icon);
 			const blob1 = await icn1.blob();
@@ -186,7 +186,7 @@ async function loadApp(app, type) {
 				icn2 = await window.parent.tb.libcurl.fetch(app.icon);
 			}
 			if (!icn2.ok) {
-				icn2 = await window.parent.tb.libcurl.fetch("https://terbiumon.top/favicon.ico");
+				icn2 = await window.parent.tb.libcurl.fetch("/favicon.ico");
 			}
 			const blob2 = await icn2.blob();
 			icnUrl = URL.createObjectURL(blob2);
@@ -561,7 +561,7 @@ async function install(app, type) {
 		if (app.requirements.os) {
 			if (semverCompare(window.parent.tb.system.version(), app.requirements.os.replace(/^v/, "")) < 0) {
 				window.parent.tb.notification.Toast({
-					message: `Failed to install ${app.name}. Your version of Terbium does not meet the minimum requirements.`,
+					message: `Failed to install ${app.name}. Your version of Magma does not meet the minimum requirements.`,
 					application: "App Store",
 					iconSrc: "/fs/apps/system/app store.tapp/icon.svg",
 					time: 5000,
@@ -571,7 +571,7 @@ async function install(app, type) {
 		}
 	}
 	switch (type) {
-		case "Terbium":
+		case "Magma":
 			try {
 				await window.parent.tb.system.download(app["pkg-download"], `/apps/system/${app.name}.zip`);
 				await unzip(`/apps/system/${app.name}.zip`, `/apps/system/${app.name}.tapp/`);
@@ -775,7 +775,7 @@ async function install(app, type) {
  */
 async function uninstall(app, type) {
 	switch (type) {
-		case "Terbium":
+		case "Magma":
 			if (await dirExists(`/apps/system/${app.name}.tapp`)) {
 				await window.parent.tb.fs.shell.promises.rm(`/apps/system/${app.name}.tapp`, { recursive: true });
 			} else {
@@ -930,7 +930,6 @@ const dirExists = async path => {
 };
 
 window.addEventListener("load", async () => {
-	await loadRepo("https://raw.githubusercontent.com/TerbiumOS/tb-repo/refs/heads/main/manifest.json");
 	loadRepos();
 	window.parent.document.querySelector(".app-search").addEventListener("input", e => {
 		search(e.target.value);

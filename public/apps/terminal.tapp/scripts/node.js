@@ -96,7 +96,7 @@ async function node(args, term) {
 	inputHandler.dispose();
 	window.removeEventListener("resize", resizeHandler);
 	tb.setCommandProcessing(true);
-	setTabTitle("Terbium TSH");
+	setTabTitle("Magma TSH");
 	// Display exit message
 	displayOutput(`\r\nWebContainer shell exited with code ${exitCode}`);
 	// Give the focus back to the terminal
