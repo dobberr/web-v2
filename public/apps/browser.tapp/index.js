@@ -8,25 +8,6 @@ const create_new_id = () => {
 	return id;
 };
 
-function customEncode(input) {
-	if (input) {
-		let str = input.toString();
-		let charArray = str.split("");
-		let encodedArray = charArray.map((char, index) => {
-			if (index % 2) {
-				return String.fromCharCode(2 ^ char.charCodeAt());
-			} else {
-				return char;
-			}
-		});
-		let encodedString = encodedArray.join("");
-		let finalResult = encodeURIComponent(encodedString);
-		return finalResult;
-	} else {
-		return input;
-	}
-}
-
 function customDecode(encodedString) {
 	if (!encodedString) return encodedString;
 	let [firstPart, ...restParts] = encodedString.split("?");
@@ -73,6 +54,7 @@ function closeTab(id) {
 function newTab() {
 	let updateTab = false;
 	let interval;
+	let currentUrl = "about:newtab";
 	const id = create_new_id();
 	const tab = document.createElement("div");
 	tab.classList.add("tab");
@@ -164,6 +146,8 @@ function newTab() {
 							targetUrl = `${searchEngine}${encodeURIComponent(input)}`;
 						}
 						//activeTabContent.src = `${window.location.origin}${x.prefix}${await window.parent.tb.proxy.encode(targetUrl, "XOR")}`;
+						currentUrl = targetUrl;
+						urlbar.value = targetUrl;
 						x.go(targetUrl);
 					});
 					break;
@@ -186,6 +170,7 @@ function newTab() {
 		console.log(proxy);
 		console.log(localStorage.getItem("defUrl"));
 		if (localStorage.getItem("defUrl") === "about:newtab") {
+			currentUrl = "about:newtab";
 			urlbar.value = "about:newtab";
 			updateTab = true;
 			tab_content.src = "/apps/browser.tapp/newtab.html";
@@ -196,7 +181,8 @@ function newTab() {
 				});
 			});
 		} else {
-			tab_content.src = parent.window.location.origin + "/service/" + customEncode(localStorage.getItem("defUrl") || "about:newtab");
+			currentUrl = localStorage.getItem("defUrl") || "about:newtab";
+			x.go(currentUrl);
 		}
 	});
 	const unloadHandler = function () {
@@ -213,12 +199,7 @@ function newTab() {
 		if (document.querySelector(".left-arrow").classList.contains("disabled")) {
 			document.querySelector(".left-arrow").classList.remove("disabled");
 		}
-			if (updateTab === false) {
-				// The iframe location is Scramjet's encoded /service/ URL. Never
-				// expose that internal representation in the address bar.
-				const encodedUrl = tab_content.contentWindow.window.location.href.replace(/^.*\/service\//, "");
-				urlbar.value = customDecode(encodedUrl);
-			}
+		if (updateTab === false) urlbar.value = currentUrl;
 		if (!tab_content.contentDocument.getElementById("tb-cursor-controller")) {
 			const cursor_controller = document.createElement("script");
 			cursor_controller.src = "/cursor_changer.js";
@@ -350,9 +331,12 @@ function newTab() {
 		url = url.replace(parent.window.location.origin, "");
 		url = url.replace("/uv/service/", "");
 		url = url.replace("/service/", "");
-		if (!url.includes("about:")) {
-			urlbar.value = customDecode(url);
+		if (url.includes("browser.tapp/newtab.html")) {
+			currentUrl = "about:newtab";
+		} else if (!url.includes("about:")) {
+			currentUrl = customDecode(url);
 		}
+		urlbar.value = currentUrl;
 	});
 	tab_close.addEventListener("click", () => {
 		closeTab(id);
